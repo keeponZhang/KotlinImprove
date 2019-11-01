@@ -13,6 +13,7 @@ import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.jvm.jvmErasure
 
 abstract class BaseFragment<out P: BasePresenter<BaseFragment<P>>>: IMvpView<P>,Fragment() {
+    //负责实例化presenter
     override val presenter: P
 
     init {
@@ -23,11 +24,14 @@ abstract class BaseFragment<out P: BasePresenter<BaseFragment<P>>>: IMvpView<P>,
     private fun createPresenterKt(): P {
         buildSequence {
             var thisClass: KClass<*> = this@BaseFragment::class
+            //这里是个死循环
             while (true){
+                //拿到所有父类
                 yield(thisClass.supertypes)
                 thisClass = thisClass.supertypes.firstOrNull()?.jvmErasure?: break
             }
         }.flatMap {
+            //泛型参数的List
             it.flatMap { it.arguments }.asSequence()
         }.first {
             it.type?.jvmErasure?.isSubclassOf(IPresenter::class) ?: false

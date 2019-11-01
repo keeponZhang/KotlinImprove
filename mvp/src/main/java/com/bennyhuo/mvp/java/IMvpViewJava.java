@@ -1,4 +1,4 @@
-package com.bennyhuo.mvp.impl.java;
+package com.bennyhuo.mvp.java;
 
 /**
  * createBy	 keepon

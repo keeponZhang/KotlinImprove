@@ -12,6 +12,7 @@ import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.jvm.jvmErasure
 
+//这里跟应用市场的实现区别，BaseActivity直接实现了IMvpView
 abstract class BaseActivity<out P : BasePresenter<BaseActivity<P>>> : AppCompatActivity(), IMvpView<P> {
 
     final override val presenter: P
