@@ -40,6 +40,23 @@ abstract class BaseFragment<out P: BasePresenter<BaseFragment<P>>>: IMvpView<P>,
         }
     }
 
+    //下面是java实现
+    //Type类型,Type是一个接口(Java所有类型都会继承这个接口，Class，ParameterizedType，实现了这个接口)
+    //	Type只有五种类型：
+//	Class:所代表的是一个确定的类，比如Integer,String,Double等
+//	ParameterizedType:ParameterizedType代表完整的泛型表达式
+//	TypeVariable:TypeVariable代表泛型变量的符号即T,U等
+//	WildcardType:WildcardType代表通配符,<? extends Integer>,<? super String>,或者<?>等
+//	GenericArrayType:GenericArrayType代表数组类型
+
+
+    //type:com.zhang.fanshe.bean.Point<java.lang.Integer>
+    //val type = clazz.getGenericSuperclass()
+
+    //其实type上面也是一个ParameterizedType,代表一个泛型类型
+    //parameterArgClass:class java.lang.Integer
+    //val parameterArgClass vparameterizedType.getActualTypeArguments()
+    //parameterArgClass:class java.lang.Integer
     private fun createPresenter(): P {
         buildSequence<Type> {
             var thisClass: Class<*> = this@BaseFragment.javaClass
@@ -52,6 +69,7 @@ abstract class BaseFragment<out P: BasePresenter<BaseFragment<P>>>: IMvpView<P>,
         }.flatMap {
             (it as ParameterizedType).actualTypeArguments.asSequence()
         }.first {
+            //是不是IPresenter的子类
             it is Class<*> && IPresenter::class.java.isAssignableFrom(it)
         }.let {
             return (it as Class<P>).newInstance()
