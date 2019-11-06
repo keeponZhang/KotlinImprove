@@ -14,9 +14,8 @@ abstract class CommonListPresenter<DataType, out View : CommonListFragment<DataT
     fun initData() {
         listPage.loadFromFirst()
                 .subscribe({
-                    if (it.isEmpty()) view.onDataInitWithNothing() else view.onDataInit(it)
-                }, {
-                    view.onDataInitWithError(it.message ?: it.toString())
+                    if (it.isEmpty()) view.onDataInitWithNothing() else view.onDataInit(it) },
+                    { view.onDataInitWithError(it.message ?: it.toString())
                 }).let(subscriptionList::add)
     }
 

@@ -1,5 +1,6 @@
 package com.bennyhuo.github.model.page
 
+import android.util.Log
 import com.bennyhuo.common.log.logger
 import retrofit2.adapter.rxjava.GitHubPaging
 import rx.Observable
@@ -29,6 +30,7 @@ abstract class ListPage<DataType>: DataProvider<DataType> {
     fun loadFromFirst(pageCount: Int = currentPage) =
             Observable.range(1, pageCount)
                     .concatMap {
+                        Log.e("TAG", "ListPage loadFromFirst:" +it);
                         getData(it)
                     }
                     .doOnError {

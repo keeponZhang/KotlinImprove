@@ -40,9 +40,9 @@ class GitHubPaging<T>: ArrayList<T>() {
                 .map {
                     matchResult ->
                     val url = matchResult.groupValues[1]
-                    Log.e("TAG", "GitHubPaging setupLinks:"+url );
-                    Log.e("TAG", "GitHubPaging setupLinks matchResult.groupValues[3]:"+matchResult.groupValues[3] );
-                    Log.e("TAG", "GitHubPaging setupLinks matchResult.groupValues[2]:"+matchResult.groupValues[2] );
+                    Log.d("TAG", "GitHubPaging setupLinks:"+url );
+                    Log.d("TAG", "GitHubPaging setupLinks matchResult.groupValues[3]:"+matchResult.groupValues[3] );
+                    Log.d("TAG", "GitHubPaging setupLinks matchResult.groupValues[2]:"+matchResult.groupValues[2] );
                     relMap[matchResult.groupValues[3]] = url // next=....
                     if(url.contains("since")){
                         HttpUrl.parse(url)?.queryParameter("since")?.let{

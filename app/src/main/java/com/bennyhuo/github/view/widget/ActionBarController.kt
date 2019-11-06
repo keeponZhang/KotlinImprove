@@ -3,6 +3,7 @@ package com.bennyhuo.github.view.widget
 import android.database.DataSetObserver
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
+import android.util.Log
 import android.view.View
 import com.bennyhuo.github.view.MainActivity
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -25,6 +26,7 @@ class ActionBarController(val mainActivity: MainActivity) {
 
         override fun onChanged() {
             super.onChanged()
+            Log.e("TAG", "ViewPagerDataSetObserver onChanged:" );
             viewPager?.let { viewPager ->
                 if (viewPager.adapter?.count ?: 0 <= 1) {
                     tabLayout.visibility = View.GONE
@@ -41,6 +43,7 @@ class ActionBarController(val mainActivity: MainActivity) {
     }
 
     fun setupWithViewPager(viewPager: ViewPager?) {
+        //?: 表示前面为空，执行后面
         viewPager?.let(dataSetObserver::viewPager::set)?: run{ tabLayout.visibility = View.GONE }
         tabLayout.setupWithViewPager(viewPager)
     }

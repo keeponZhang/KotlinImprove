@@ -9,7 +9,11 @@ import com.bennyhuo.github.view.fragments.subfragments.RepoListFragmentBuilder
 
 class RepoFragment: CommonViewPagerFragment() {
     override fun getFragmentPagesNotLoggedIn(): List<FragmentPage> {
-        return listOf(FragmentPage(RepoListFragment(), "All"))
+//       return listOf(FragmentPage(RepoListFragment(), "All"))
+        return listOf(
+                FragmentPage(RepoListFragment().apply { arguments = Bundle().apply { putParcelable(RepoListFragmentBuilder.OPTIONAL_USER, AccountManager.currentUser) } }, "My"),
+                FragmentPage(RepoListFragment(), "All")
+        )
     }
 
     override fun getFragmentPagesLoggedIn(): List<FragmentPage> {

@@ -44,7 +44,7 @@ abstract class CommonListAdapter<T>(@LayoutRes val itemResId: Int) : RecyclerVie
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         onBindData(holder, data[position])
 
-        holder.itemView.setOnTouchListener { _, event ->
+        holder.itemView.setOnTouchListener { v, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> ViewCompat.animate(holder.itemView).scaleX(1.03f).scaleY(1.03f).translationZ(holder.itemView.dip(10).toFloat()).duration = CARD_TAP_DURATION
                 MotionEvent.ACTION_UP,
