@@ -7,17 +7,19 @@ import android.widget.LinearLayout
 const val MATCH_PARENT = -1
 const val WRAP_CONTENT = -2
 
-class _LinearLayout(context: Context): LinearLayout(context), DslViewParent<LinearLayout.LayoutParams> {
-
+ class _LinearLayout(context: Context): LinearLayout(context), DslViewParent<LinearLayout.LayoutParams> {
+    //这个不是_LinearLayout的属性，只是拓展属性
     var <T: View> T.layoutWeight: Float
         set(value){
             lparams.weight = value
         }
-        get(){
+       get(){
             return lparams.weight
         }
 
-    var <T: View> T.layoutGravity: Int
+
+
+   public var <T: View> T.layoutGravity: Int
         set(value){
             lparams.gravity = value
         }

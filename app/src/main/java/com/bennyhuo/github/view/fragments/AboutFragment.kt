@@ -28,6 +28,13 @@ class AboutFragmentUI: AnkoComponent<AboutFragment> {
         nestedScrollView {
             verticalLayout {
 
+                relativeLayout{
+                    themedTextView("GitHub2", R.style.detail_title){
+
+                    }.lparams(width = wrapContent, height = wrapContent){
+                        gravity = Gravity.CENTER_HORIZONTAL
+                    }
+                }
                 imageView {
                     imageResource = R.mipmap.ic_launcher
                 }.lparams(width = wrapContent, height = wrapContent){

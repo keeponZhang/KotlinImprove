@@ -9,6 +9,7 @@ import kotlin.annotation.AnnotationTarget.*
 @DslMarker
 @Target(CLASS, TYPE, TYPEALIAS)
 annotation class DslViewMarker
+//保证外部作用域的receiver不会被隐式调用
 
 @DslViewMarker
 interface DslViewParent<out P : ViewGroup.MarginLayoutParams> {

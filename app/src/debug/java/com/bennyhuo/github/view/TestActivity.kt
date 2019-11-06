@@ -9,6 +9,7 @@ import com.bennyhuo.dsl.layout.v1.*
 class TestActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //用frameLayout和verticalLayout搭配会有问题
         frameLayout {
             setBackgroundColor(Color.RED)
 
@@ -20,13 +21,13 @@ class TestActivity : AppCompatActivity() {
 
                 button {
                     text = "Button 1"
-                    //layoutWeight = 1f // implicit receiver.
+                    layoutWeight = 1f // implicit receiver.
                     setBackgroundColor(Color.YELLOW)
                 }
 
                 button {
                     text = "Button 2"
-                    //layoutWeight = 3f
+                    layoutWeight = 3f
                     setBackgroundColor(Color.GREEN)
                 }
             }

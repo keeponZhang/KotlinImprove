@@ -1,5 +1,6 @@
 package com.bennyhuo.github.presenter
 
+import android.text.TextUtils
 import com.bennyhuo.github.BuildConfig
 import com.bennyhuo.github.model.account.AccountManager
 import com.bennyhuo.github.view.LoginActivity
@@ -20,7 +21,7 @@ class LoginPresenter: BasePresenter<LoginActivity>()  {
     }
 
     fun checkUserName(name: String): Boolean {
-        return true
+        return !TextUtils.isEmpty(name)
     }
 
     fun checkPasswd(passwd: String): Boolean {

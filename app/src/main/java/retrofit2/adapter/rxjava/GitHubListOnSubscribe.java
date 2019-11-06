@@ -15,6 +15,8 @@
  */
 package retrofit2.adapter.rxjava;
 
+import com.bennyhuo.github.network.entities.SearchRepositories2;
+
 import retrofit2.Response;
 import rx.Observable.OnSubscribe;
 import rx.Subscriber;
@@ -51,7 +53,11 @@ final class GitHubListOnSubscribe<GitHubPagingBody> implements OnSubscribe<GitHu
         GitHubPaging<?> paging;
         if(response.body() instanceof GitHubPaging){
           paging = (GitHubPaging<?>) response.body();
-        } else if(response.body() instanceof PagingWrapper){
+        }else if(response.body() instanceof SearchRepositories2){ //其实这里可以用SearchRepositories，但是没有那么灵活
+          SearchRepositories2 searchRepositories2 = ((SearchRepositories2) response.body());
+          paging = (GitHubPaging<?>) searchRepositories2.getItems();
+        }
+        else if(response.body() instanceof PagingWrapper){
             paging = ((PagingWrapper) response.body()).getPaging();
         } else {
           throw new IllegalArgumentException("response.body type error: " + response.body().getClass());

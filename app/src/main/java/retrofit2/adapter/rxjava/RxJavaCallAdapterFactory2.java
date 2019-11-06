@@ -15,6 +15,10 @@
  */
 package retrofit2.adapter.rxjava;
 
+import android.util.Log;
+
+import com.bennyhuo.github.network.entities.SearchRepositories2;
+
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
@@ -116,6 +120,7 @@ public final class RxJavaCallAdapterFactory2 extends CallAdapter.Factory {
     if (rawType != Observable.class && !isSingle && !isCompletable) {
       return null;
     }
+//    SystemClock.sleep(2000);
 
     if (isCompletable) {
       return new RxJavaCallAdapter2(Void.class, schedulerSubscribeOn, schedulerObserveOn, isAsync, false, true, false, false, true);
@@ -156,11 +161,14 @@ public final class RxJavaCallAdapterFactory2 extends CallAdapter.Factory {
     } else if(PagingWrapper.class.isAssignableFrom(rawObservableType)){
       responseType = observableType;
       isPaging = true;
+    }else if(rawObservableType == SearchRepositories2.class){
+      responseType = observableType;
+      isPaging = true;
     } else {
       responseType = observableType;
       isBody = true;
     }
-
+    Log.e("TAG", "RxJavaCallAdapterFactory2 get:");
     return new RxJavaCallAdapter2(responseType, schedulerSubscribeOn, schedulerObserveOn, isAsync, isResult, isBody, isPaging, isSingle,
         false);
   }

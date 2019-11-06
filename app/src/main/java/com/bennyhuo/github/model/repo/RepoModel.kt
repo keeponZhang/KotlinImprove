@@ -13,9 +13,11 @@ class RepoListPage(val owner: User?): ListPage<Repository>(){
     override fun getData(page: Int): Observable<GitHubPaging<Repository>> {
         return if(owner == null){
             RepositoryService.allRepositories(page, "pushed:<" + Date().format("yyyy-MM-dd")).map { it.paging }
+//            RepositoryService.allRepositories2(1, "pushed:<" + Date().format("yyyy-MM-dd")).map { it.items }
         } else {
             RepositoryService.listRepositoriesOfUser(owner.login, page)
         }
     }
+
 
 }
