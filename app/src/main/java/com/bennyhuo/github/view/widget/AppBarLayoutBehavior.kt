@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.view.View
 import com.bennyhuo.github.R
 
+//泛型为child,behavior也作用于child上,其实Child是指要执行动作的CoordinatorLayout的子View,在这个例子，Dependency是TempView，child随着Dependency的动而动
 class AppBarLayoutBehavior(context: Context, attrs: AttributeSet?) : CoordinatorLayout.Behavior<View>() {
     companion object {
         const val INVALID_VALUE = 0
@@ -46,6 +47,7 @@ class AppBarLayoutBehavior(context: Context, attrs: AttributeSet?) : Coordinator
     private fun initializeProperties(child: View, appBarLayout: AppBarLayout){
         if(targetHeight != INVALID_VALUE || child.height == 0) return
 
+        //totalScrollRange  展开和折叠开来的差值
         targetHeight = appBarLayout.height - appBarLayout.totalScrollRange - targetTop * 2
         targetWidth = child.width * targetHeight / child.height
         originalWidth = child.width
@@ -84,10 +86,15 @@ class AppBarLayoutBehavior(context: Context, attrs: AttributeSet?) : Coordinator
 
     override fun onDependentViewChanged(parent: CoordinatorLayout, child: View, dependency: View): Boolean {
         (dependency as? AppBarLayout)?.let {
+            //已经推了百分之多少
             val offsetRatio = (it.height - it.bottom).toFloat() / it.totalScrollRange
             child.x += totalOffsetX * (offsetRatio - this.offsetRatio)
             child.y += totalOffsetY * (offsetRatio - this.offsetRatio)
 
+            //targetWidth.toFloat() / originalWidth 最终的数值
+            //1 - targetWidth.toFloat() / originalWidth要变化多少
+            //(1 - targetWidth.toFloat() / originalWidth) * offsetRatio 现在需要变化多少
+            // child.scaleX 现在已经变成多少
             child.scaleX = 1 - (1 - targetWidth.toFloat() / originalWidth) * offsetRatio
             child.scaleY = 1 - (1 - targetHeight.toFloat() / originalHeight) * offsetRatio
 

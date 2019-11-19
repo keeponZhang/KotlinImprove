@@ -59,6 +59,7 @@ final class RxJavaCallAdapter2<R> implements CallAdapter<R, Object> {
         ? new CallEnqueueOnSubscribe<>(call)
         : new CallExecuteOnSubscribe<>(call);
 
+//    SystemClock.sleep(2000);
     OnSubscribe<?> func;
     if (isResult) {
       func = new ResultOnSubscribe<>(callFunc);

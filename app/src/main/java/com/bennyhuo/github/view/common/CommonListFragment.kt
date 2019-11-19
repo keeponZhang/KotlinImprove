@@ -3,6 +3,7 @@ package com.bennyhuo.github.view.common
 import android.os.Bundle
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -91,6 +92,7 @@ abstract class CommonListFragment<DataType, out Presenter: CommonListPresenter<D
     fun onMoreDataLoaded(data: GitHubPaging<DataType>){
         adapter.data.update(data)
         recyclerView.refreshComplete(ListPage.PAGE_SIZE)
+        Log.d("TAG", "CommonListFragment onMoreDataLoaded:" +data.isLast);
         recyclerView.setNoMore(data.isLast)
         dismissError()
     }

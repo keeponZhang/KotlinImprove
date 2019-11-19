@@ -11,6 +11,7 @@ import com.bennyhuo.github.model.account.AccountManager
 import com.bennyhuo.github.model.account.OnAccountStateChangeListener
 import com.bennyhuo.github.network.entities.User
 import com.bennyhuo.github.view.MainActivity
+import com.bennyhuo.github.view.adapter.CommonViewPageAdapter
 import com.bennyhuo.github.view.config.ViewPagerFragmentConfig
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.viewPager

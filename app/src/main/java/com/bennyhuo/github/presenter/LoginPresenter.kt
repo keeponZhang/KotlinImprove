@@ -31,7 +31,8 @@ class LoginPresenter: BasePresenter<LoginActivity>()  {
     override fun onResume() {
         super.onResume()
         if(BuildConfig.DEBUG){
-            view.onDataInit(BuildConfig.testUserName, BuildConfig.testPassword)
+            view.onDataInit("462789909@qq.com","keeponzhang110")
+//            view.onDataInit(BuildConfig.testUserName, BuildConfig.testPassword)
         } else {
             view.onDataInit(AccountManager.username, AccountManager.passwd)
         }

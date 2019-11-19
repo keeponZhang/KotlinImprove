@@ -41,7 +41,8 @@ class AboutFragmentUI: AnkoComponent<AboutFragment> {
                     gravity = Gravity.CENTER_HORIZONTAL
                 }
                 themedTextView("GitHub", R.style.detail_title){
-
+                    //传属性
+//                    textColor = attrStyle(R.attr.colorAccent)
                 }.lparams(width = wrapContent, height = wrapContent){
                     gravity = Gravity.CENTER_HORIZONTAL
                 }

@@ -1,5 +1,6 @@
 package com.bennyhuo.github.view.common
 
+import android.util.Log
 import com.bennyhuo.github.model.page.ListPage
 import com.bennyhuo.mvp.impl.BasePresenter
 import rx.Subscription
@@ -28,6 +29,7 @@ abstract class CommonListPresenter<DataType, out View : CommonListFragment<DataT
     }
 
     fun loadMore() {
+        Log.e("TAG", "CommonListPresenter loadMore:" );
         listPage.loadMore()
                 .subscribe(
                         { view.onMoreDataLoaded(it) },

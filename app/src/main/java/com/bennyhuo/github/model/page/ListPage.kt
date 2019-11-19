@@ -17,7 +17,7 @@ abstract class ListPage<DataType>: DataProvider<DataType> {
 
     fun loadMore() = getData(currentPage + 1)
             .doOnNext {
-                currentPage + 1
+                currentPage=currentPage + 1
             }
             .doOnError {
                 logger.error("loadMore Error", it)
@@ -28,6 +28,7 @@ abstract class ListPage<DataType>: DataProvider<DataType> {
             }
 
     fun loadFromFirst(pageCount: Int = currentPage) =
+
             Observable.range(1, pageCount)
                     .concatMap {
                         Log.e("TAG", "ListPage loadFromFirst:" +it);

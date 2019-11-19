@@ -15,6 +15,8 @@ class RepoListFragment : CommonListFragment<Repository, RepoListPresenter>() {
 
     @Optional
     var user: User? = null
+    var user2: User? = null
+
 
     override val adapter = RepoListAdapter()
 }

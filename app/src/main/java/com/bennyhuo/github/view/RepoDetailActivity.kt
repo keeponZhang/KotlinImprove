@@ -30,7 +30,7 @@ class RepoDetailActivity: BaseDetailSwipeFinishableActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         initDetails()
-        reloadDetails()
+        getDataFromServer()
     }
 
     private fun initDetails(){
@@ -57,7 +57,7 @@ class RepoDetailActivity: BaseDetailSwipeFinishableActivity() {
             } else {
                 ActivityService.star(repository.owner.login, repository.name)
                         .map { true }
-            }.doOnNext { reloadDetails(true) }
+            }.doOnNext { getDataFromServer(true) }
         }
 
         watches.checkEvent = { isChecked ->
@@ -67,7 +67,7 @@ class RepoDetailActivity: BaseDetailSwipeFinishableActivity() {
             } else {
                 ActivityService.watch(repository.owner.login, repository.name)
                         .map { true }
-            }.doOnNext { reloadDetails(true) }
+            }.doOnNext { getDataFromServer(true) }
         }
 
         ActivityService.isStarred(repository.owner.login, repository.name)
@@ -82,10 +82,10 @@ class RepoDetailActivity: BaseDetailSwipeFinishableActivity() {
                     stars.isChecked = it.isSuccessful
                 }
 
-//        ActivityService.isWatched(repository.owner.login, repository.name)
-//                .subscribeIgnoreError {
-//                    watches.isChecked = it.subscribed
-//                }
+        ActivityService.isWatched(repository.owner.login, repository.name)
+                .subscribeIgnoreError {
+                    watches.isChecked = it.subscribed
+                }
 
 //        launchUI {
 //            try {
@@ -111,7 +111,7 @@ class RepoDetailActivity: BaseDetailSwipeFinishableActivity() {
 
     }
 
-    private fun reloadDetails(forceNetwork: Boolean = false){
+    private fun getDataFromServer(forceNetwork: Boolean = false){
         RepositoryService.getRepository(repository.owner.login, repository.name, forceNetwork)
                 .subscribe(object: Subscriber<Repository>(){
                     override fun onStart() {

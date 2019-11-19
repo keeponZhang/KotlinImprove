@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.RelativeLayout
+import android.widget.TextView
 import com.bennyhuo.github.R
 import com.bennyhuo.github.utils.subscribeIgnoreError
 import com.bennyhuo.kotlin.opd.delegateOf
@@ -14,10 +15,13 @@ import kotlin.reflect.KProperty
 
 typealias CheckEvent = (Boolean) -> Observable<Boolean>
 
+//其实也可以不用R，getter函数一般没有方法参数
 class ObjectPropertyDelegate<T, R>(val receiver: R, val getter: ((R) -> T)? = null, val setter: ((R, T) -> Unit)? = null, defaultValue: T? = null) {
     private var value: T? = defaultValue
 
+    //ref 代理的属性 ，如 title
     operator fun getValue(ref: Any, property: KProperty<*>): T {
+        //receiver是方法调用者
         return getter?.invoke(receiver) ?: value!!
     }
 
@@ -36,8 +40,14 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     init {
         View.inflate(context, R.layout.detail_item, this)
     }
+//    var title:String
+//        set(value){
+//            titleView.text = value
+//        }
+//        get() = textView().text.toString()
 
-    var title by delegateOf(titleView::getText, titleView::setText)
+    var title by ObjectPropertyDelegate(titleView,TextView::getText,TextView::setText)
+//    var title by delegateOf(titleView::getText, titleView::setText)
 
     var content by delegateOf(contentView::getText, contentView::setText, "")
 
@@ -60,6 +70,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         }
 
         onClick {
+            //把isChecked作为checkEventlambda表达式的输入参数
             checkEvent?.invoke(isChecked)
                     ?.subscribeIgnoreError {
                         isChecked = it

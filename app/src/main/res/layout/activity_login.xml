@@ -72,6 +72,7 @@
                 </android.support.design.widget.TextInputLayout>
 
                 <Button
+                    android:textAllCaps="false"
                     android:id="@+id/signInButton"
                     style="?android:textAppearanceSmall"
                     android:layout_width="match_parent"

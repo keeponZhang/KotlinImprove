@@ -26,7 +26,7 @@ class ActionBarController(val mainActivity: MainActivity) {
 
         override fun onChanged() {
             super.onChanged()
-            Log.e("TAG", "ViewPagerDataSetObserver onChanged:" );
+            Log.w("TAG", "ViewPagerDataSetObserver onChanged:" );
             viewPager?.let { viewPager ->
                 if (viewPager.adapter?.count ?: 0 <= 1) {
                     tabLayout.visibility = View.GONE

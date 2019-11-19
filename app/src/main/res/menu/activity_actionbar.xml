@@ -6,4 +6,5 @@
         android:title=""
         app:actionLayout="@layout/menu_item_daynight"
         app:showAsAction="always"/>
+
 </menu>

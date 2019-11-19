@@ -168,7 +168,7 @@ public final class RxJavaCallAdapterFactory2 extends CallAdapter.Factory {
       responseType = observableType;
       isBody = true;
     }
-    Log.e("TAG", "RxJavaCallAdapterFactory2 get:");
+    Log.d("TAG", "RxJavaCallAdapterFactory2 get:");
     return new RxJavaCallAdapter2(responseType, schedulerSubscribeOn, schedulerObserveOn, isAsync, isResult, isBody, isPaging, isSingle,
         false);
   }
