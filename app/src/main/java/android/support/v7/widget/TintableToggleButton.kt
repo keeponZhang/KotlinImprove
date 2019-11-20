@@ -14,10 +14,18 @@ class TintableToggleButton
 constructor(context: Context, attrs: AttributeSet?= null,  defStyleAttr: Int = 0)
     : ToggleButton(TintContextWrapper.wrap(context), attrs, defStyleAttr), TintableBackgroundView {
 
-    private var backgroundTintHelper: AppCompatBackgroundHelper? = null
+    //    private var backgroundTintHelper: AppCompatBackgroundHelper? = null
+    private val backgroundTintHelper = AppCompatBackgroundHelper(this)
+
+    //这里不能用lazy，应为成员变量初始化调用后，backgroundTintHelper还是为空的，然后走构造函数，构造函数用到了这个成员变量，因为这个成员变量是空的，导致空指针
+//    private val backgroundTintHelper: AppCompatBackgroundHelper by lazy{
+//    AppCompatBackgroundHelper(this).apply{
+//        loadFromAttributes(attrs, defStyleAttr)
+//    }
+//}
 
     init {
-        backgroundTintHelper = AppCompatBackgroundHelper(this)
+//        backgroundTintHelper = AppCompatBackgroundHelper(this)
         backgroundTintHelper?.loadFromAttributes(attrs, defStyleAttr)
     }
 

@@ -14,6 +14,8 @@ import com.bennyhuo.tieguanyin.annotations.ActivityBuilder
 import com.bennyhuo.tieguanyin.annotations.PendingTransition
 import org.jetbrains.anko.dip
 
+//exitAnim 前面一个activity的退出动画
+//这个是fling结束
 @ActivityBuilder(pendingTransition = PendingTransition(enterAnim = R.anim.rignt_in, exitAnim = R.anim.left_out))
 abstract class BaseDetailActivity: AppCompatActivity() {
 
@@ -70,6 +72,7 @@ class SwipeBackTouchDelegate(val activity: Activity, block: ()-> Unit){
     fun onTouchEvent(event: MotionEvent) = swipeBackDelegate.onTouchEvent(event)
 }
 
+//这里需要关掉，否则会冲突
 @ActivityBuilder(pendingTransition = PendingTransition(enterAnim = 0, exitAnim = 0))
 abstract class BaseDetailSwipeFinishableActivity: AppCompatActivity(), SwipeFinishableActivity{
     override fun onCreate(savedInstanceState: Bundle?) {
