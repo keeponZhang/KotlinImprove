@@ -1,6 +1,7 @@
 package com.bennyhuo.github.network.interceptors
 
 import android.util.Base64
+import android.util.Log
 import com.bennyhuo.github.model.account.AccountManager
 import okhttp3.Interceptor
 import okhttp3.Interceptor.Chain
@@ -16,6 +17,7 @@ class AuthInterceptor: Interceptor{
                             val userCredentials = AccountManager.username + ":" + AccountManager.passwd
                             val auth = "Basic " + String(Base64.encode(userCredentials.toByteArray(), Base64.DEFAULT)).trim()
                             header("Authorization", auth)
+                            Log.e("TAG", "AuthInterceptor intercept Authorization:"+ auth);
                         }
                         AccountManager.isLoggedIn() ->{
                             val auth = "Token " + AccountManager.token

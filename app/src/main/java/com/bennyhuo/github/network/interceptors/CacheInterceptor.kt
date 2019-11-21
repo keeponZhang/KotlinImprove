@@ -1,6 +1,5 @@
 package com.bennyhuo.github.network.interceptors
 
-import com.bennyhuo.common.log.logger
 import com.bennyhuo.github.common.ext.no
 import com.bennyhuo.github.common.ext.otherwise
 import com.bennyhuo.github.common.ext.yes
@@ -39,7 +38,7 @@ class CacheInterceptor : Interceptor {
 
         request = request.newBuilder().url(request.url().newBuilder().removeAllQueryParameters(FORCE_NETWORK).build()).build()
         return chain.proceed(request).also { response ->
-            logger.error("Cache: ${response.cacheResponse()}, Network: ${response.networkResponse()}")
+//            logger.error("Cache: ${response.cacheResponse()}, Network: ${response.networkResponse()}")
         }
     }
 }

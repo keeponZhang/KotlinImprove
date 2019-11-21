@@ -1,5 +1,6 @@
 package com.bennyhuo.retroapollo
 
+import android.util.Log
 import com.apollographql.apollo.api.Query
 import com.bennyhuo.retroapollo.annotations.GraphQLQuery
 import com.bennyhuo.retroapollo.utils.Utils
@@ -7,6 +8,7 @@ import com.bennyhuo.retroapollo.utils.error
 import java.lang.reflect.Method
 import java.lang.reflect.ParameterizedType
 
+//api接口的返回结果
 class ApolloServiceMethod<T : Any>(private val retroApollo: RetroApollo,
                                    val method: Method,
                                    private val buildBuilderMethod: Method,
@@ -33,15 +35,21 @@ class ApolloServiceMethod<T : Any>(private val retroApollo: RetroApollo,
                 val name = (returnType as Class<*>).simpleName
                 throw IllegalStateException("$name return type must be parameterized as $name<Foo> or $name<out Foo>")
             }
+            Log.e("TAG", "Builder  returnType:"+returnType );
 
             callAdapter = retroApollo.getCallAdapter(returnType) ?: throw  IllegalStateException("$returnType is not supported.")
 
             //RepositoryIssueCountQuery.Data.class
             val dataType = callAdapter.responseType() as Class<*>
 
+
             buildBuilderMethod = dataType.enclosingClass.getDeclaredMethod("builder")
             val builderClass = dataType.enclosingClass.declaredClasses.first { it.simpleName == "Builder" }
 
+
+            for (declaredClass in dataType.enclosingClass.declaredClasses) {
+                Log.e("TAG", "Builder dataType.enclosingClass.declaredClasses:" +declaredClass);
+            }
             method.parameterAnnotations.zip(method.parameterTypes).mapTo(fieldSetters){
                 (first, second) ->
                 val annotation = first.first { it is GraphQLQuery } as GraphQLQuery

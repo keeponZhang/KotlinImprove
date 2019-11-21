@@ -154,18 +154,18 @@ class RepoDetailActivity: BaseDetailSwipeFinishableActivity() {
 
 
 
-//        GraphQLService.repositoryIssueCount(repository.owner.login, repository.name)
-//                .subscribeIgnoreError {
-//                    data ->
-//                    issues.content = "open: ${data.repository()?.openIssues()?.totalCount()?: 0} closed: ${data.repository()?.closedIssues()?.totalCount()?: 0}"
-//                }
+        GraphQLService.repositoryIssueCount(repository.owner.login, repository.name)
+                .subscribeIgnoreError {
+                    data ->
+                    issues.content = "open: ${data.repository()?.openIssues()?.totalCount()?: 0} closed: ${data.repository()?.closedIssues()?.totalCount()?: 0}"
+                }
 
-        launchUI {
-            val (data, error) = GraphQLService.repositoryIssueCount3(repository.owner.login, repository.name).awaitOrError()
-            error?.printStackTrace()?: kotlin.run {
-                issues.content = "open: ${data.repository()?.openIssues()?.totalCount()?: 0} closed: ${data.repository()?.closedIssues()?.totalCount()?: 0}"
-            }
-        }
+//        launchUI {
+//            val (data, error) = GraphQLService.repositoryIssueCount3(repository.owner.login, repository.name).awaitOrError()
+//            error?.printStackTrace()?: kotlin.run {
+//                issues.content = "open: ${data.repository()?.openIssues()?.totalCount()?: 0} closed: ${data.repository()?.closedIssues()?.totalCount()?: 0}"
+//            }
+//        }
 
 //        GraphQLService.repositoryIssueCount2(repository.owner.login, repository.name)
 //                        .enqueue(object : ApolloCall.Callback<RepositoryIssueCountQuery.Data>(){
@@ -189,7 +189,7 @@ class RepoDetailActivity: BaseDetailSwipeFinishableActivity() {
 //                        e.printStackTrace()
 //                    }
 //
-//                    override fun onResponse(response: com.apollographql.apollo.api.Response<Data>) {
+//                    override fun onResponse(response: com.apollographql.apollo.api.Response<RepositoryIssueCountQuery.Data>) {
 //                        runOnUiThread {
 //                            response.data()?.let{
 //                                issues.content = "open: ${it.repository()?.openIssues()?.totalCount()?: 0} closed: ${it.repository()?.closedIssues()?.totalCount()?: 0}"
