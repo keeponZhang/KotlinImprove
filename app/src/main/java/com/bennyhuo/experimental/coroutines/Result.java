@@ -16,6 +16,7 @@ public class Result<T> {
         return error;
     }
 
+    //RepoDetailActivity的 val (subscriptionResponse, error) 用到这个
     public T component1() {
         return value;
     }

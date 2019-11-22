@@ -14,3 +14,5 @@ suspend fun <T> Deferred<T>.awaitOrError(): Result<T>{
         Result.of(e)
     }
 }
+
+//data class Result<T>(val value:T,val exceptino:Throwable)

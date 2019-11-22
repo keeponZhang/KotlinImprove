@@ -91,20 +91,33 @@ class RepoDetailActivity: BaseDetailSwipeFinishableActivity() {
                     watches.isChecked = it.subscribed
                 }
 
-//        launchUI {
-//            try {
-//                watches.isChecked = ActivityService.isWatchedDeferred(repository.owner.login, repository.name).await().subscribed
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//            }
-//        }
+        launchUI {
+            try {
+                watches.isChecked = ActivityService.isWatchedDeferred(repository.owner.login, repository.name).await().subscribed
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
 
-//        launchUI {
-//            val (subscriptionResponse, error) = ActivityService.isWatchedDeferred(repository.owner.login, repository.name).awaitOrError()
-//            error?.printStackTrace() ?: run {
+        launchUI {
+            //(subscriptionResponse, error)这个相当于Result 实例
+            //结构表达式，需要数据类有component方法支持
+            val (subscriptionResponse, error) = ActivityService.isWatchedDeferred(repository.owner.login, repository.name).awaitOrError()
+            error?.printStackTrace() ?: run {
 //                watches.isChecked = subscriptionResponse!!.subscribed
-//            }
-//        }
+                //可以去掉两个感叹号
+                watches.isChecked = subscriptionResponse.subscribed
+            }
+        }
+        launchUI {
+            //(subscriptionResponse, error)这个相当于Result 实例
+            val result = ActivityService.isWatchedDeferred(repository.owner.login, repository.name).awaitOrError()
+            //?.表示result.error不等于空运行printStackTrace()，?:表示result.error等于空执行run方法
+            result.error?.printStackTrace() ?: run {
+                watches.isChecked = result.value!!.subscribed
+            }
+        }
+
 
         launchUI {
             val (subscriptionResponse, error) = ActivityService.isWatchedDeferred(repository.owner.login, repository.name).awaitOrError()

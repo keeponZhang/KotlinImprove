@@ -26,6 +26,7 @@ fun loadAsync(callback: Callback) {
     }
 }
 
+//异步操作变成了同步挂起操作
 suspend fun load(): String {
     val completableDeferred = CompletableDeferred<String>()
     loadAsync(object : Callback {
@@ -37,6 +38,7 @@ suspend fun load(): String {
             completableDeferred.completeExceptionally(e)
         }
     })
+    //注意这里
     return completableDeferred.await()
 }
 

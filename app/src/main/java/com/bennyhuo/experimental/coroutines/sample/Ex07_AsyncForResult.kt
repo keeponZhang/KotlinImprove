@@ -7,8 +7,11 @@ import kotlinx.coroutines.experimental.runBlocking
 
 fun main(args: Array<String>) = runBlocking {
     log(-1)
+    //可以拿到返回结果
     val result = async {
         log(1)
+        //also会把调用对象返回
+        //loadForResult方法要用suspend修饰
         loadForResult().also {
             log(2)
         }

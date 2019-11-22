@@ -4,9 +4,10 @@ import com.bennyhuo.coroutines.utils.log
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.runBlocking
+import kotlin.coroutines.experimental.EmptyCoroutineContext
 
 //runBlocking可以启动一个协程，在当前线程调度
-fun main(args: Array<String>) = runBlocking {
+fun main(args: Array<String>) = runBlocking(EmptyCoroutineContext) {
     log(1)
     val job = launch {
         log(-1)

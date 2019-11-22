@@ -9,6 +9,7 @@ fun main(args: Array<String>) = runBlocking {
     val job = launch {
         log(1)
         for (i in 1..10000) {
+            //isActive false 表示协程已经被cancel掉了
             if(!isActive) break
             log("In for-loop: $i")
         }

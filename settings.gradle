@@ -1,1 +1,2 @@
 include ':app', ':common', ':mvp', ':layout', ':retroapollo-android'
+include 'coroutinelite'

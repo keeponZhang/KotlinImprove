@@ -47,7 +47,7 @@ fun main(args: Array<String>) = runBlocking {
 //    useCoroutine()
 //    useTraditionalForLoop()
 //    useExtensionForEach()
-    timeCost()
+   timeCost()
 }
 
 fun useCallback() {
@@ -65,14 +65,15 @@ fun useCallback() {
 suspend fun wrappedInSuspendFunction() {
     launch {
         try {
-            showUser(async { getUser("bennyhuo") }.await())
+            showUser(async {
+                getUser("bennyhuo") }.await())
         } catch (e: Exception) {
             showError(e)
         }
     }.join()
 }
 
-suspend fun getUser(login: String) = suspendCoroutine<User> { continuation ->
+suspend fun getUser(login: String):User= suspendCoroutine<User> { continuation ->
     gitHubServiceApi.getUserCallback(login).enqueue(object : Callback<User> {
         override fun onFailure(call: Call<User>, t: Throwable) {
             continuation.resumeWithException(t)
@@ -84,7 +85,36 @@ suspend fun getUser(login: String) = suspendCoroutine<User> { continuation ->
     })
 }
 
+//callback 也可以用CompletableDeferred
+suspend fun getUser2(login: String):User{
+    val completableDeferred = CompletableDeferred<User>()
+    gitHubServiceApi.getUserCallback(login).enqueue(object : Callback<User> {
+        override fun onFailure(call: Call<User>, t: Throwable) {
+
+            completableDeferred.completeExceptionally(t)
+        }
+        override fun onResponse(call: Call<User>, response: Response<User>) {
+            response.body()?.let(completableDeferred::complete) ?: completableDeferred.completeExceptionally(NullPointerException())
+        }
+    })
+    return completableDeferred.await();
+}
+//像这种有返回值且带回调的，不能用return
+//suspend fun getUser2(login: String):User{
+//    gitHubServiceApi.getUserCallback(login).enqueue(object : Callback<User> {
+//        override fun onFailure(call: Call<User>, t: Throwable) {
+//            return User("","","")
+//        }
+//
+//        override fun onResponse(call: Call<User>, response: Response<User>) {
+//            return User("","","")
+//        }
+//    })
+//}
+
+
 suspend fun useCoroutine() {
+    //没调用join的话，协程里面可能没走
     launch {
         try {
             showUser(gitHubServiceApi.getUserCoroutine("bennyhuo").await())
@@ -94,6 +124,7 @@ suspend fun useCoroutine() {
     }.join()
 }
 
+//有suspend修饰，才可以调用Join
 suspend fun useTraditionalForLoop(){
     launch {
         for (login in listOf("JakeWharton", "abreslav", "yole", "elizarov")) {
@@ -132,7 +163,7 @@ suspend fun timeCost(){
                             } catch (e: Exception) {
                                 showError(e)
                             }
-                            delay(1000)
+                            delay(200)
                         }
                     }
         }

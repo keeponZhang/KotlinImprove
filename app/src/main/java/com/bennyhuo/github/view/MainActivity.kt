@@ -6,6 +6,7 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
+import com.bennyhuo.coroutines.utils.log
 import com.bennyhuo.experimental.coroutines.launchUI
 import com.bennyhuo.github.R
 import com.bennyhuo.github.common.ext.no
@@ -26,6 +27,9 @@ import com.bennyhuo.tieguanyin.annotations.ActivityBuilder
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.menu_item_daynight.view.*
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.launch
 import org.jetbrains.anko.sdk15.listeners.onCheckedChange
 import org.jetbrains.anko.toast
 
@@ -53,8 +57,28 @@ class MainActivity : AppCompatActivity(), OnAccountStateChangeListener {
         initNavigationView()
 
         AccountManager.onAccountStateChangeListeners.add(this)
-    }
 
+        val thread = Thread(object :Runnable {
+              override fun run(){
+                 androidSupport()
+             }
+        });
+        thread.start()
+
+    }
+    fun androidSupport() {
+        launch(UI) { // Android 的 UI 线程支持
+            log(-1)
+            val job = launch {
+                log(1)
+                delay(1000L)
+                log(2)
+            }
+            log(-2)
+            job.join()
+            log(-3)
+        }
+    }
     override fun onDestroy() {
         super.onDestroy()
         AccountManager.onAccountStateChangeListeners.remove(this)
