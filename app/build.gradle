@@ -133,5 +133,6 @@ dependencies {
     implementation project(":common")
     implementation project(":mvp")
     implementation project(":layout")
-    provided fileTree(dir: 'src\\libs', include: ['*.aar', '*.jar'], exclude: [])
+    //    implementation files('C:\\Program Files\\Java\\jdk1.8.0_212\\jre\\lib\\rt.jar')
+    implementation files('D:\\java\\jdk_1.8\\jre\\lib\\rt.jar')
 }
