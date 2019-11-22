@@ -76,6 +76,7 @@ abstract class AbstractCoroutine<T>(override val context: CoroutineContext, bloc
     //join  suspendCoroutine<T>泛型参数表示返回类型
     private suspend fun joinSuspend() = suspendCoroutine<Unit> { continuation ->
         //这表明block是有参数的，下面真正用到block时会把参数传进来，->箭头后面，表示传进来之后怎么处理
+        //这里面调用抛异常的话会走到resumeWithException
         doOnCompleted { t, throwable -> continuation.resume(Unit) }
     }
 
@@ -101,7 +102,9 @@ abstract class AbstractCoroutine<T>(override val context: CoroutineContext, bloc
                 is State.Complete<*> -> {
                     (currentState as State.Complete<T>).let {
                         //这个不能注释掉
-                        block(currentState.value, currentState.exception)
+                       block(currentState.value, currentState.exception)
+//                        return
+//                        throw IllegalStateException("Invalid State: $currentState")
                     }
                 }
                 else -> {
