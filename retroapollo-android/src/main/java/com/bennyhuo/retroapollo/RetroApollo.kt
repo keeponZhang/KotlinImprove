@@ -1,5 +1,6 @@
 package com.bennyhuo.retroapollo
 
+import android.util.Log
 import com.apollographql.apollo.ApolloClient
 import com.bennyhuo.retroapollo.CallAdapter.Factory
 import com.bennyhuo.retroapollo.utils.Utils
@@ -43,6 +44,7 @@ class RetroApollo private constructor(val apolloClient: ApolloClient, val callAd
                             return method.invoke(this, args)
                         }
 
+                        //这里括号相当于调用invoke方法
                         return loadServiceMethod(method)(args)
                     }
                 }) as T
@@ -61,8 +63,10 @@ class RetroApollo private constructor(val apolloClient: ApolloClient, val callAd
     }
 
     fun getCallAdapter(type: Type): CallAdapter<Any, Any>? {
+
         for(callAdapterFactory in callAdapterFactories){
             val callAdapter = callAdapterFactory.get(type)
+            Log.e("TAG", "RetroApollo getCallAdapter  returnType:" +type+"  callAdapter="+callAdapter);
             return callAdapter as? CallAdapter<Any, Any> ?: continue
         }
         return null

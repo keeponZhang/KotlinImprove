@@ -65,11 +65,14 @@ class ApolloServiceMethod<T : Any>(private val retroApollo: RetroApollo,
 
     operator fun invoke(args: Array<Any>?): T {
         val builder = buildBuilderMethod(null)
+
+        //相当于调用RepositoryIssueCountQuery.builder
         args?.let {
             fieldSetters.zip(it).forEach {
                 it.first.invoke(builder, it.second)
             }
         }
+        //给builder的参数赋值
 
         //RepositoryIssueCountQuery.builder().owner(xxx).repo(xxx).build()
         return callAdapter.adapt(retroApollo.apolloClient.query(buildQueryMethod(builder) as Query<*, Any, *>))

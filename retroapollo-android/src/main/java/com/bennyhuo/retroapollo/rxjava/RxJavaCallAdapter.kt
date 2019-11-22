@@ -49,6 +49,7 @@ class RxJavaCallAdapter<T>(val rxReturnType: RxReturnType,
     }
 
     override fun adapt(call: ApolloCall<T>): Any {
+        //触发订阅才去真正执行ApolloCall.enqueue方法
         val callFunc = CallExecuteOnSubscribe(call)
         var originalObservable = Observable.create(callFunc)
         originalObservable = subscribeScheduler?.let(originalObservable::subscribeOn) ?: originalObservable
