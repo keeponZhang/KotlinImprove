@@ -5,7 +5,9 @@ kotlin {
     experimental {
         coroutines "enable"
     }
-
+    androidExtensions {
+        experimental = true
+    }
 }
 android {
     compileSdkVersion 27

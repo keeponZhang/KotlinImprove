@@ -25,7 +25,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.bennyhuo.github"
-        minSdkVersion 16
+        minSdkVersion 26
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -133,6 +133,6 @@ dependencies {
     implementation project(":common")
     implementation project(":mvp")
     implementation project(":layout")
-    //    implementation files('C:\\Program Files\\Java\\jdk1.8.0_212\\jre\\lib\\rt.jar')
-    implementation files('D:\\java\\jdk_1.8\\jre\\lib\\rt.jar')
+    compileOnly files('C:/Program Files/Java/jdk1.8.0_212/jre/lib/rt.jar')
+//    implementation files('D:\\java\\jdk_1.8\\jre\\lib\\rt.jar')
 }
