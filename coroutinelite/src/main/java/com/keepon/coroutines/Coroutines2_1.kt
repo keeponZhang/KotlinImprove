@@ -70,14 +70,65 @@ fun postItem4(item: String) {
 //并且利用状态机的方式保证各个片段是顺序执行的。
 
 
+//1.1 挂起函数可能会挂起协程
+//挂起函数使用 CPS style 的代码来挂起协程，保证挂起点后面的代码只能在挂起函数执行完后才能执行，所以挂起函数保证了协程内的顺序执行顺序。
+//
+//在多个协程的情况下，挂起函数的作用更加明显：
+//launch {
+//    //async { requestToken0() } //新建一个协程，可能在另一个线程运行
+//    // 但是 await() 是挂起函数，当前协程执行逻辑卡在第一个分支，第一种状态，当 async 的协程执行完后恢复当前协程，才会切换到下一个分支
+//    //在这里调用await没什么优势，但是await()可以在下面调用
+//    val token = async { requestToken0() }.await()
+//    // 在第二个分支状态中，又新建一个协程，使用 await 挂起函数将之后代码作为 Continuation 放倒下一个分支状态，直到 async 协程执行完
+//    val post = async { createPost0(token, "keepon") }.await()
+//    // 最后一个分支状态，直接在当前协程处理
+//    processPost0(post)
+//}
 
 
+//上面的例子中，await()挂起函数挂起当前协程，直到异步协程完成执行，但是这里并没有阻塞线程，是使用状态机的控制逻辑来实现。
+//而且挂起函数可以保证挂起点之后的代码一定在挂起点前代码执行完成后才会执行，挂起函数保证顺序执行，所以异步逻辑也可以用顺序的代码顺序来编写。
+//
+//注意挂起函数不一定会挂起协程，如果相关调用的结果已经可用，库可以决定继续进行而不挂起，
+//例如async { requestToken() }的返回值Deferred的结果已经可用时，await()挂起函数可以直接返回结果，不用再挂起协程。
 
 
+//1.2 挂起函数不会阻塞线程
+//挂起函数挂起协程，并不会阻塞协程所在的线程，例如协程的delay()挂起函数会暂停协程一定时间，并不会阻塞协程所在线程，但是Thread.sleep()函数会阻塞线程。
+//看下面一个例子，两个协程运行在同一线程上：
+//fun main(args: Array<String>) {
+//    // 创建一个单线程的协程调度器，下面两个协程都运行在这同一线程上
+//    val coroutineDispatcher = newSingleThreadContext("ctx")
+//    // 启动协程 1
+//    GlobalScope.launch(coroutineDispatcher) {
+//        println("the first coroutine")
+//        delay(200)
+//        println("the first coroutine")
+//    }
+//    // 启动协程 2
+//    GlobalScope.launch(coroutineDispatcher) {
+//        println("the second coroutine")
+//        delay(100)
+//        println("the second coroutine")
+//    }
+//    // 保证 main 线程存活，确保上面两个协程运行完成
+//    Thread.sleep(500)
+//}
+//
+//运行结果为：
+//
+//the first coroutine
+//the second coroutine
+//the second coroutine
+//the first coroutine
 
+//从上面结果可以看出，当协程 1 暂停 200 ms 时，线程并没有阻塞，而是执行协程 2 的代码，然后在 200 ms 时间到后，继续执行协程 1 的逻辑。
+//所以挂起函数并不会阻塞线程，这样可以节省线程资源，协程挂起时，线程可以继续执行其他逻辑。
 
-
-
+//1.3 挂起函数恢复协程后运行在哪个线程
+//协程的所属的线程调度在前一篇文章《协程简介》中有提到过，主要是由协程的CoroutineDispatcher控制，CoroutineDispatcher可以指定协程运行在某一特定线程上
+//、运作在线程池中或者不指定所运行的线程。所以协程调度器可以分为Confined dispatcher和Unconfined dispatcher，Dispatchers.Default、Dispatchers.IO
+//和Dispatchers.Main属于Confined dispatcher，都指定了协程所运行的线程或线程池，挂起函数恢复后协程也是运行在指定的线程或线程池上的，而Dispatchers.Unconfined属于Unconfined dispatcher，协程启动并运行在 Caller Thread 上，但是只是在第一个挂起点之前是这样的，挂起恢复后运行在哪个线程完全由所调用的挂起函数决定。
 
 
 
