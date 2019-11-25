@@ -1,7 +1,5 @@
 package com.keepon.coroutines;
 
-import android.content.ClipData
-import android.media.session.MediaSession
 import android.os.Build
 import com.keepon.coroutines.bean.Post
 import com.keepon.coroutines.bean.Token
@@ -18,16 +16,19 @@ import java.util.concurrent.CompletableFuture
 fun requestToken0(): Token {
     // makes request for a token & waits
     var token = Token()
+    println("requestToken0")
     return token // returns result when received
 }
 
-fun createPost0(token: MediaSession.Token, item: ClipData.Item): Post {
+fun createPost0(token: Token, item:String): Post {
     // sends item to the server & waits
     var post = Post()
+    println("createPost0")
     return post // returns resulting post
 }
 
 fun processPost0(post: Post) {
+    println("processPost0")
     // does some local processing of result
 }
 //三个函数中的操作都是耗时操作，因此不能直接在 UI 线程中运行，而且后两个函数都依赖于前一个函数的执行结果，三个任务不能并行运行，该如何解决这个问题呢？
@@ -47,11 +48,11 @@ fun processPost1(post: Post) {
 
 }
 
-fun main(args: Array<String>) {
+//fun main(args: Array<String>) {
 //    postItem1("keepon")
 //    postItem2("keepon")
 //    postItem3("keepon")
-}
+//}
 fun postItem1(item: String) {
     //这里的意思是，先处理requestTokenAsync，再在requestTokenAsync的回调调用createPostAsync，
 //    再在createPostAsync的回调调用processPost2
@@ -98,12 +99,12 @@ fun createPostAsync3(token: Token, item:String): CompletableFuture<Post>? {  pri
     } else {
         return null;
     };}
-fun processPost(post: Post) {   println("处理post3") }
+fun processPost3(post: Post) {   println("处理post3") }
 fun postItem3(item: String) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         requestTokenAsync3()!!
                 .thenCompose { token -> createPostAsync3(token, item) }
-                .thenAccept { post -> processPost(post) }
+                .thenAccept { post -> processPost3(post) }
                 .exceptionally { e ->
                     e.printStackTrace()
                     null

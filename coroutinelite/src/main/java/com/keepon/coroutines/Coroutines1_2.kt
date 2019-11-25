@@ -3,8 +3,6 @@ package com.keepon.coroutines;
 import android.content.ClipData
 import com.keepon.coroutines.bean.Post
 import com.keepon.coroutines.bean.Token
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.experimental.launch
 
 
 //先看官方文档的描述
@@ -35,12 +33,18 @@ fun processPost5(post: Post) { }
 
 
 fun postItem5(item: ClipData.Item) {
-   launch { // 创建一个新协程
-        val token = requestToken5()
-        val post = createPost5(token, item)
-        processPost(post)
-        // 需要异常处理，直接加上 try/catch 语句即可
-    }
+//   launch { // 创建一个新协程
+//        val token = requestToken5()
+//        val post = createPost5(token, item)
+//        processPost(post)
+//        // 需要异常处理，直接加上 try/catch 语句即可
+//    }
+
+//    GlobalScope.launch(Dispatchers.Main) { // 在 UI 线程创建一个新协程
+//        val token = requestToken5()
+//        val post = createPost5(token, item)
+//        processPost5(post)
+//    }
 }
 
 //public actual fun launch(
@@ -76,9 +80,59 @@ fun postItem5(item: ClipData.Item) {
 
 
 
+//3.3 Job & Deferred
+//Job，任务，封装了协程中需要执行的代码逻辑。Job 可以取消并且有简单生命周期，它有三种状态：
+//
+//State	                                [isActive]	[isCompleted]	[isCancelled]
+//New (optional initial state)	           false	    false	          false
+//Active (default initial state)	           true	        false	          false
+//Completing (optional transient state)	   true	        false	          false
+//Cancelling (optional transient state)	   false	    false	          true
+//Cancelled (final state)	                   false	    true	          true
+//Completed (final state)	                   false	    true	          false
+//Job 完成时是没有返回值的，如果需要返回值的话，应该使用 Deferred，它是 Job 的子类public interface Deferred<out T> : Job。
+
+//3.4 Coroutine builders
+//CoroutineScope.launch函数属于协程构建器 Coroutine builders，Kotlin 中还有其他几种 Builders，负责创建协程。
+
+//3.4.1 CoroutineScope.launch {}
+//CoroutineScope.launch {} 是最常用的 Coroutine builders，不阻塞当前线程，在后台创建一个新协程，也可以指定协程调度器，例如在 Android 中常用的GlobalScope.launch(Dispatchers.Main) {}。
+//
+//3.4.2 runBlocking {}
+//runBlocking {}是创建一个新的协程同时阻塞当前线程，直到协程结束。这个不应该在协程中使用，主要是为main函数和测试设计的。
 
 
 
+// fun main(args: Array<String>) = runBlocking { // start main coroutine
+//    launch { // launch new coroutine in background and continue
+//        delay(1000L)
+//        println("World!")
+//    }
+//    println("Hello,") // main coroutine continues here immediately
+//    delay(2000L)      // delaying for 2 seconds to keep JVM alive
+
+
+//    val time = measureTimeMillis {
+//        val one = async { doSomethingUsefulOne() }  // start async one coroutine without suspend main coroutine
+//        val two = async { doSomethingUsefulTwo() }  // start async two coroutine without suspend main coroutine
+//        println("The answer is ${one.await()}"+ " and ${ two.await()}") // suspend main coroutine for waiting two async coroutines to finish
+//    }
+//    println("Completed in $time ms")
+//}
+
+fun doSomethingUsefulTwo(): Any {
+    return "1"
+}
+
+fun doSomethingUsefulOne(): Any {
+    return "2"
+}
+//3.4.3 withContext {}
+//withContext {}不会创建新的协程，在指定协程上运行挂起代码块，并挂起该协程直至代码块运行完成。
+
+//3.4.4 async {}
+//CoroutineScope.async {}可以实现与 launch builder 一样的效果，在后台创建一个新协程，唯一的区别是它有返回值，因为CoroutineScope.async {}返回的是 Deferred 类型。
+//获取CoroutineScope.async {}的返回值需要通过await()函数，它也是是个挂起函数，调用时会挂起当前协程直到 async 中代码执行完并返回某个值。
 
 
 
