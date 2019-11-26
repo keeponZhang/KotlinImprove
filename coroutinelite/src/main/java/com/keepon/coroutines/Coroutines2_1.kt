@@ -130,7 +130,12 @@ fun postItem4(item: String) {
 //、运作在线程池中或者不指定所运行的线程。所以协程调度器可以分为Confined dispatcher和Unconfined dispatcher，Dispatchers.Default、Dispatchers.IO
 //和Dispatchers.Main属于Confined dispatcher，都指定了协程所运行的线程或线程池，挂起函数恢复后协程也是运行在指定的线程或线程池上的，而Dispatchers.Unconfined属于Unconfined dispatcher，协程启动并运行在 Caller Thread 上，但是只是在第一个挂起点之前是这样的，挂起恢复后运行在哪个线程完全由所调用的挂起函数决定。
 
-
+//test4()
+//main runBlocking: I'm working in thread ForkJoinPool.commonPool-worker-1
+//Unconfined      : I'm working in thread main
+//Unconfined      : After delay in thread kotlinx.coroutines.DefaultExecutor
+//main runBlocking: After delay in thread ForkJoinPool.commonPool-worker-1
+//上面第三行输出，经过delay挂起函数后，使用Dispatchers.Unconfined的协程挂起恢复后依然在delay函数使用的DefaultExecutor上。
 
 
 
