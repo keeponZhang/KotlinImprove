@@ -6,6 +6,12 @@ buildscript {
     ext.support_version = '27.1.0'
     ext.anko_version = '0.10.4'
     ext.apollo_version = "0.4.2"
+
+
+    ext.androidBuildToolsVersion = "27.0.3"
+    ext.androidMinSdkVersion = 16
+    ext.androidTargetSdkVersion = 27
+    ext.androidCompileSdkVersion = 27
     repositories {
         maven{
             url "http://maven.aliyun.com/nexus/content/groups/public"

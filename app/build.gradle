@@ -22,11 +22,11 @@ noArg {
 
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion rootProject.ext.androidCompileSdkVersion
     defaultConfig {
         applicationId "com.bennyhuo.github"
-        minSdkVersion 26
-        targetSdkVersion 27
+        minSdkVersion rootProject.ext.androidMinSdkVersion
+        targetSdkVersion rootProject.ext.androidTargetSdkVersion
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
