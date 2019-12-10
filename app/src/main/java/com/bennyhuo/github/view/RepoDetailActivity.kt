@@ -22,7 +22,7 @@ import retrofit2.Response
 import rx.Subscriber
 
 @ActivityBuilder
-class RepoDetailActivity: BaseDetailSwipeFinishableActivity() {
+class RepoDetailActivity : BaseDetailSwipeFinishableActivity() {
 
     @Required
     lateinit var repository: Repository
@@ -37,63 +37,65 @@ class RepoDetailActivity: BaseDetailSwipeFinishableActivity() {
         getDataFromServer()
     }
 
-    private fun initDetails(){
+    private fun initDetails() {
         avatarView.loadWithGlide(repository.owner.avatar_url, repository.owner.login.first())
         collapsingToolbar.title = repository.name
 
         descriptionView.markdownText = getString(R.string.repo_description_template,
-                repository.owner.login,
-                repository.owner.html_url,
-                repository.name,
-                repository.html_url,
-                repository.owner.login,
-                repository.owner.html_url,
-                githubTimeToDate(repository.created_at).view())
+            repository.owner.login,
+            repository.owner.html_url,
+            repository.name,
+            repository.html_url,
+            repository.owner.login,
+            repository.owner.html_url,
+            githubTimeToDate(repository.created_at).view())
 
         bodyView.text = repository.description
 
         detailContainer.alpha = 0f
 
         stars.checkEvent = { isChecked ->
-            if(isChecked){
+            if (isChecked) {
                 ActivityService.unstar(repository.owner.login, repository.name)
-                        .map { false }
+                    .map { false }
             } else {
                 ActivityService.star(repository.owner.login, repository.name)
-                        .map { true }
+                    .map { true }
             }.doOnNext { getDataFromServer(true) }
         }
 
         watches.checkEvent = { isChecked ->
-            if(isChecked){
+            if (isChecked) {
                 ActivityService.unwatch(repository.owner.login, repository.name)
-                        .map { false }
+                    .map { false }
             } else {
                 ActivityService.watch(repository.owner.login, repository.name)
-                        .map { true }
+                    .map { true }
             }.doOnNext { getDataFromServer(true) }
         }
 
         ActivityService.isStarred(repository.owner.login, repository.name)
-                .onErrorReturn {
-                    if(it is retrofit2.HttpException){
-                        it.response() as Response<Any>
-                    } else {
-                        throw it
-                    }
+            .onErrorReturn {
+                if (it is retrofit2.HttpException) {
+                    it.response() as Response<Any>
+                } else {
+                    throw it
                 }
-                .subscribeIgnoreError {
-                    stars.isChecked = it.isSuccessful
-                }
+            }
+            .subscribeIgnoreError {
+                stars.isChecked = it.isSuccessful
+            }
 
         ActivityService.isWatched(repository.owner.login, repository.name)
-                .subscribeIgnoreError {
-                    watches.isChecked = it.subscribed
-                }
+            .subscribeIgnoreError {
+                watches.isChecked = it.subscribed
+            }
 
         launchUI {
             try {
-                watches.isChecked = ActivityService.isWatchedDeferred(repository.owner.login, repository.name).await().subscribed
+                watches.isChecked =
+                    ActivityService.isWatchedDeferred(repository.owner.login, repository.name)
+                        .await().subscribed
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -102,16 +104,18 @@ class RepoDetailActivity: BaseDetailSwipeFinishableActivity() {
         launchUI {
             //(subscriptionResponse, error)这个相当于Result 实例
             //结构表达式，需要数据类有component方法支持
-            val (subscriptionResponse, error) = ActivityService.isWatchedDeferred(repository.owner.login, repository.name).awaitOrError()
+            val (subscriptionResponse, error) = ActivityService.isWatchedDeferred(
+                repository.owner.login, repository.name).awaitOrError()
             error?.printStackTrace() ?: run {
-//                watches.isChecked = subscriptionResponse!!.subscribed
+                //                watches.isChecked = subscriptionResponse!!.subscribed
                 //可以去掉两个感叹号
                 watches.isChecked = subscriptionResponse.subscribed
             }
         }
         launchUI {
             //(subscriptionResponse, error)这个相当于Result 实例
-            val result = ActivityService.isWatchedDeferred(repository.owner.login, repository.name).awaitOrError()
+            val result = ActivityService.isWatchedDeferred(repository.owner.login, repository.name)
+                .awaitOrError()
             //?.表示result.error不等于空运行printStackTrace()，?:表示result.error等于空执行run方法
             result.error?.printStackTrace() ?: run {
                 watches.isChecked = result.value!!.subscribed
@@ -120,43 +124,42 @@ class RepoDetailActivity: BaseDetailSwipeFinishableActivity() {
 
 
         launchUI {
-            val (subscriptionResponse, error) = ActivityService.isWatchedDeferred(repository.owner.login, repository.name).awaitOrError()
+            val (subscriptionResponse, error) = ActivityService.isWatchedDeferred(
+                repository.owner.login, repository.name).awaitOrError()
             error?.printStackTrace() ?: run {
                 watches.isChecked = subscriptionResponse.subscribed
             }
         }
-
     }
 
-    private fun getDataFromServer(forceNetwork: Boolean = false){
+    private fun getDataFromServer(forceNetwork: Boolean = false) {
         RepositoryService.getRepository(repository.owner.login, repository.name, forceNetwork)
-                .subscribe(object: Subscriber<Repository>(){
-                    override fun onStart() {
-                        super.onStart()
-                        loadingView.animate().alpha(1f).start()
-                    }
+            .subscribe(object : Subscriber<Repository>() {
+                override fun onStart() {
+                    super.onStart()
+                    loadingView.animate().alpha(1f).start()
+                }
 
-                    override fun onNext(t: Repository) {
-                        repository = t
+                override fun onNext(t: Repository) {
+                    repository = t
 
-                        owner.content = repository.owner.login
-                        stars.content = repository.stargazers_count.toString()
-                        watches.content = repository.subscribers_count.toString()
-                        forks.content = repository.forks_count.toString()
-                        //issues.content = repository.open_issues_count.toString()
+                    owner.content = repository.owner.login
+                    stars.content = repository.stargazers_count.toString()
+                    watches.content = repository.subscribers_count.toString()
+                    forks.content = repository.forks_count.toString()
+                    //issues.content = repository.open_issues_count.toString()
 
-                        loadingView.animate().alpha(0f).start()
-                        detailContainer.animate().alpha(1f).start()
-                    }
+                    loadingView.animate().alpha(0f).start()
+                    detailContainer.animate().alpha(1f).start()
+                }
 
-                    override fun onCompleted() = Unit
+                override fun onCompleted() = Unit
 
-                    override fun onError(e: Throwable) {
-                        loadingView.animate().alpha(0f).start()
-                        e.printStackTrace()
-                    }
-
-                })
+                override fun onError(e: Throwable) {
+                    loadingView.animate().alpha(0f).start()
+                    e.printStackTrace()
+                }
+            })
 
 //        val watcher = apolloClient.query(RepositoryIssueCountQuery(repository.name, repository.owner.login)).watcher()
 //        RxApollo.from(watcher)
@@ -169,54 +172,54 @@ class RepoDetailActivity: BaseDetailSwipeFinishableActivity() {
 //                }
 
 
-
-
 //        GraphQLService.repositoryIssueCount(repository.owner.login, repository.name)
 //                .subscribeIgnoreError {
 //                    data ->
 //                    issues.content = "open: ${data.repository()?.openIssues()?.totalCount()?: 0} closed: ${data.repository()?.closedIssues()?.totalCount()?: 0}"
 //                }
 
-//        launchUI {
-//            val (data, error) = GraphQLService.repositoryIssueCount3(repository.owner.login, repository.name).awaitOrError()
-//            error?.printStackTrace()?: kotlin.run {
-//                issues.content = "open: ${data.repository()?.openIssues()?.totalCount()?: 0} closed: ${data.repository()?.closedIssues()?.totalCount()?: 0}"
-//            }
-//        }
+        launchUI {
+            val (data, error) = GraphQLService.repositoryIssueCount3(repository.owner.login, repository.name).awaitOrError()
+            error?.printStackTrace()?: kotlin.run {
+                issues.content = "open: ${data.repository()?.openIssues()?.totalCount()?: 0} closed: ${data.repository()?.closedIssues()?.totalCount()?: 0}"
+            }
+        }
 
         //如果返回是ApolloCall，动态代理走到的是第一行
         GraphQLService.repositoryIssueCount2(repository.owner.login, repository.name)
-                        .enqueue(object : ApolloCall.Callback<RepositoryIssueCountQuery.Data>(){
-                    override fun onFailure(e: ApolloException) {
-                        e.printStackTrace()
-                    }
+            .enqueue(object : ApolloCall.Callback<RepositoryIssueCountQuery.Data>() {
+                override fun onFailure(e: ApolloException) {
+                    e.printStackTrace()
+                }
 
-                    override fun onResponse(response: com.apollographql.apollo.api.Response<RepositoryIssueCountQuery.Data>) {
-                        runOnUiThread {
-                            response.data()?.let{
-                                issues.content = "open: ${it.repository()?.openIssues()?.totalCount()?: 0} closed: ${it.repository()?.closedIssues()?.totalCount()?: 0}"
-                            }
+                override fun onResponse(
+                    response: com.apollographql.apollo.api.Response<RepositoryIssueCountQuery.Data>
+                ) {
+                    runOnUiThread {
+                        response.data()?.let {
+                            issues.content = "open: ${it.repository()?.openIssues()?.totalCount()
+                                ?: 0} closed: ${it.repository()?.closedIssues()?.totalCount() ?: 0}"
                         }
                     }
-
-                })
+                }
+            })
 
         apolloClient.query(RepositoryIssueCountQuery(repository.name, repository.owner.login))
-                .enqueue(object : ApolloCall.Callback<RepositoryIssueCountQuery.Data>(){
-                    override fun onFailure(e: ApolloException) {
-                        e.printStackTrace()
-                    }
+            .enqueue(object : ApolloCall.Callback<RepositoryIssueCountQuery.Data>() {
+                override fun onFailure(e: ApolloException) {
+                    e.printStackTrace()
+                }
 
-                    override fun onResponse(response: com.apollographql.apollo.api.Response<RepositoryIssueCountQuery.Data>) {
-                        runOnUiThread {
-                            response.data()?.let{
-                                issues.content = "open: ${it.repository()?.openIssues()?.totalCount()?: 0} closed: ${it.repository()?.closedIssues()?.totalCount()?: 0}"
-                            }
+                override fun onResponse(
+                    response: com.apollographql.apollo.api.Response<RepositoryIssueCountQuery.Data>
+                ) {
+                    runOnUiThread {
+                        response.data()?.let {
+                            issues.content = "open: ${it.repository()?.openIssues()?.totalCount()
+                                ?: 0} closed: ${it.repository()?.closedIssues()?.totalCount() ?: 0}"
                         }
                     }
-
-                })
-
+                }
+            })
     }
-
 }

@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity(), OnAccountStateChangeListener {
         ActionBarController(this)
     }
 
-    private val navigationController by lazy{
+    private val navigationController by lazy {
         NavigationController(navigationView, ::onNavItemChanged, ::handleNavigationHeaderClickEvent)
     }
 
@@ -50,7 +50,9 @@ class MainActivity : AppCompatActivity(), OnAccountStateChangeListener {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        val toggle =
+            ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close)
         drawer_layout.setDrawerListener(toggle)
         toggle.syncState()
 
@@ -58,16 +60,17 @@ class MainActivity : AppCompatActivity(), OnAccountStateChangeListener {
 
         AccountManager.onAccountStateChangeListeners.add(this)
 
-        val thread = Thread(object :Runnable {
-              override fun run(){
-                 androidSupport()
-             }
+        val thread = Thread(object : Runnable {
+            override fun run() {
+                androidSupport()
+            }
         });
         thread.start()
-
     }
+
     fun androidSupport() {
-        launch(UI) { // Android 的 UI 线程支持
+        launch(UI) {
+            // Android 的 UI 线程支持
             log(-1)
             val job = launch {
                 log(1)
@@ -79,6 +82,7 @@ class MainActivity : AppCompatActivity(), OnAccountStateChangeListener {
             log(-3)
         }
     }
+
     override fun onDestroy() {
         super.onDestroy()
         AccountManager.onAccountStateChangeListeners.remove(this)
@@ -86,12 +90,12 @@ class MainActivity : AppCompatActivity(), OnAccountStateChangeListener {
 
     private fun initNavigationView() {
         AccountManager.isLoggedIn()
-                .yes {
-                    navigationController.useLoginLayout()
-                }
-                .otherwise {
-                    navigationController.useNoLoginLayout()
-                }
+            .yes {
+                navigationController.useLoginLayout()
+            }
+            .otherwise {
+                navigationController.useNoLoginLayout()
+            }
         navigationController.selectProperItem()
     }
 
@@ -103,36 +107,35 @@ class MainActivity : AppCompatActivity(), OnAccountStateChangeListener {
         navigationController.useNoLoginLayout()
     }
 
-    private fun onNavItemChanged(navViewItem: NavViewItem){
+    private fun onNavItemChanged(navViewItem: NavViewItem) {
         drawer_layout.afterClosed {
             showFragment(R.id.fragmentContainer, navViewItem.fragmentClass, navViewItem.arguements)
             title = navViewItem.title
         }
     }
 
-    private fun handleNavigationHeaderClickEvent(){
+    private fun handleNavigationHeaderClickEvent() {
         AccountManager.isLoggedIn().no {
             startLoginActivity()
         }.otherwise {
             launchUI {
-                if(confirm("提示", "确认注销吗?")){
+                if (confirm("提示", "确认注销吗?")) {
                     AccountManager
-                            .logout()
-                            .subscribe ({
-                                toast("注销成功")
-                            }, {
-                                it.printStackTrace()
-                            })
+                        .logout()
+                        .subscribe({
+                            toast("注销成功")
+                        }, {
+                            it.printStackTrace()
+                        })
                 } else {
                     toast("取消了")
                 }
             }
         }
-
     }
 
     override fun onBackPressed() {
-        if(drawer_layout.isDrawerOpen(GravityCompat.START)){
+        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
         } else {
             super.onBackPressed()

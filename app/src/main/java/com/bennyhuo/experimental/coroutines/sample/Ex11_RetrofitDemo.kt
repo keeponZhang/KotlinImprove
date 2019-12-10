@@ -14,10 +14,10 @@ import kotlin.coroutines.experimental.suspendCoroutine
 //region common
 val gitHubServiceApi by lazy {
     val retrofit = retrofit2.Retrofit.Builder()
-            .baseUrl("https://api.github.com")
-            .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(CoroutineCallAdapterFactory())
-            .build()
+        .baseUrl("https://api.github.com")
+        .addConverterFactory(GsonConverterFactory.create())
+        .addCallAdapterFactory(CoroutineCallAdapterFactory())
+        .build()
 
     retrofit.create(GitHubServiceApi::class.java)
 }
@@ -42,12 +42,12 @@ fun showError(t: Throwable) {
 //endregion
 
 fun main(args: Array<String>) = runBlocking {
-//    useCallback()
+    //    useCallback()
 //    wrappedInSuspendFunction()
 //    useCoroutine()
 //    useTraditionalForLoop()
 //    useExtensionForEach()
-   timeCost()
+    timeCost()
 }
 
 fun useCallback() {
@@ -66,35 +66,39 @@ suspend fun wrappedInSuspendFunction() {
     launch {
         try {
             showUser(async {
-                getUser("bennyhuo") }.await())
+                getUser("bennyhuo")
+            }.await())
         } catch (e: Exception) {
             showError(e)
         }
     }.join()
 }
 
-suspend fun getUser(login: String):User= suspendCoroutine<User> { continuation ->
+suspend fun getUser(login: String): User = suspendCoroutine<User> { continuation ->
     gitHubServiceApi.getUserCallback(login).enqueue(object : Callback<User> {
         override fun onFailure(call: Call<User>, t: Throwable) {
             continuation.resumeWithException(t)
         }
 
         override fun onResponse(call: Call<User>, response: Response<User>) {
-            response.body()?.let(continuation::resume) ?: continuation.resumeWithException(NullPointerException())
+            response.body()?.let(continuation::resume) ?: continuation.resumeWithException(
+                NullPointerException())
         }
     })
 }
 
 //callback 也可以用CompletableDeferred
-suspend fun getUser2(login: String):User{
+suspend fun getUser2(login: String): User {
     val completableDeferred = CompletableDeferred<User>()
     gitHubServiceApi.getUserCallback(login).enqueue(object : Callback<User> {
         override fun onFailure(call: Call<User>, t: Throwable) {
 
             completableDeferred.completeExceptionally(t)
         }
+
         override fun onResponse(call: Call<User>, response: Response<User>) {
-            response.body()?.let(completableDeferred::complete) ?: completableDeferred.completeExceptionally(NullPointerException())
+            response.body()?.let(completableDeferred::complete)
+                ?: completableDeferred.completeExceptionally(NullPointerException())
         }
     })
     return completableDeferred.await();
@@ -125,7 +129,7 @@ suspend fun useCoroutine() {
 }
 
 //有suspend修饰，才可以调用Join
-suspend fun useTraditionalForLoop(){
+suspend fun useTraditionalForLoop() {
     launch {
         for (login in listOf("JakeWharton", "abreslav", "yole", "elizarov")) {
             try {
@@ -138,39 +142,39 @@ suspend fun useTraditionalForLoop(){
     }.join()
 }
 
-suspend fun useExtensionForEach(){
+suspend fun useExtensionForEach() {
     launch {
         listOf("JakeWharton", "abreslav", "yole", "elizarov")
-                .forEach {
-                    try {
-                        showUser(gitHubServiceApi.getUserCoroutine(it).await())
-                    } catch (e: Exception) {
-                        showError(e)
-                    }
-                    delay(1000)
+            .forEach {
+                try {
+                    showUser(gitHubServiceApi.getUserCoroutine(it).await())
+                } catch (e: Exception) {
+                    showError(e)
                 }
+                delay(1000)
+            }
     }.join()
 }
 
-suspend fun timeCost(){
+suspend fun timeCost() {
     launch {
         cost {
             listOf("JakeWharton", "abreslav", "yole", "elizarov")
-                    .forEach {
-                        cost {
-                            try {
-                                showUser(gitHubServiceApi.getUserCoroutine(it).await())
-                            } catch (e: Exception) {
-                                showError(e)
-                            }
-                            delay(200)
+                .forEach {
+                    cost {
+                        try {
+                            showUser(gitHubServiceApi.getUserCoroutine(it).await())
+                        } catch (e: Exception) {
+                            showError(e)
                         }
+                        delay(200)
                     }
+                }
         }
     }.join()
 }
 
-inline fun <T> cost(block: ()-> T): T {
+inline fun <T> cost(block: () -> T): T {
     val start = System.currentTimeMillis()
     val result = block()
     val cost = System.currentTimeMillis() - start

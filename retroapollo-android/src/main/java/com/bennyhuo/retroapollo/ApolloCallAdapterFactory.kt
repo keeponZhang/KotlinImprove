@@ -9,7 +9,7 @@ class ApolloCallAdapterFactory : CallAdapter.Factory() {
     override fun get(returnType: Type): CallAdapter<*, *>? {
         if (getRawType(returnType) == ApolloCall::class.java) {
             val responseType = getParameterUpperBound(0, returnType as ParameterizedType)
-            Log.e("TAG", "ApolloCallAdapterFactory get responseType:"+responseType );
+            Log.e("TAG", "ApolloCallAdapterFactory get responseType:" + responseType);
             if (responseType is ParameterizedType) {
                 return null
             }

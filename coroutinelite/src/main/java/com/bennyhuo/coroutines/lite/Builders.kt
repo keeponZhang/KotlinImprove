@@ -17,7 +17,13 @@ fun <T> async(context: CoroutineContext = CommonPool, block: suspend () -> T): D
     return Deferred(context, block)
 }
 
-fun runBlocking(block: suspend () -> Unit) {
+fun runBlocking(block: suspend () -> Boolean) {
+    val eventQueue = BlockingQueueDispatcher()
+    val context = DispatcherContext(eventQueue)
+    BlockingCoroutine(context, eventQueue, block).joinBlocking()
+}
+
+fun runBlocking2(block: suspend () -> Unit) {
     val eventQueue = BlockingQueueDispatcher()
     val context = DispatcherContext(eventQueue)
     BlockingCoroutine(context, eventQueue, block).joinBlocking()

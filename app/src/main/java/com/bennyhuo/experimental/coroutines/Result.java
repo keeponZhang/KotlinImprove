@@ -2,7 +2,7 @@ package com.bennyhuo.experimental.coroutines;
 
 import javax.annotation.Nullable;
 
-public class Result<T> {
+public class Result<T> {  //java没有可空和不可空一说
 
     private T value;
     private Throwable error;

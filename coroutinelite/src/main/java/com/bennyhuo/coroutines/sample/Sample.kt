@@ -4,45 +4,20 @@ import com.bennyhuo.coroutines.lite.async
 import com.bennyhuo.coroutines.lite.delay
 import com.bennyhuo.coroutines.lite.launch
 import com.bennyhuo.coroutines.lite.runBlocking
+import com.bennyhuo.coroutines.lite.runBlocking2
 import com.bennyhuo.coroutines.utils.log
 
-fun main(args: Array<String>) = runBlocking {
-    test1()
-
-
-//    test2()
-}
-
-private suspend fun test2() {
+fun main(args: Array<String>) = runBlocking2 {
     launch {
         log(-1)
-        val result = async {
-            log(1)
-            delay(100)
-            log(2)
-            loadForResult().also {
-                log(3)
-            }
-        }
-        log(-2)
-        delay(200)
-        log(-3)
-        log(result.await())
-        log(-4)
-    }.join()
-}
-
-fun test1() {
-    log(1)
-    launch {
-        log(-1)
-        log("keepon")
+        delay(10)
         log(-2)
     }
     log(2)
+    true
 }
-
-suspend fun loadForResult(): String {
-    delay(1000L)
-    return "HelloWorld"
-}
+//launch 里面没有调用挂起函数
+//18:21:45:259 [main] 2
+//18:21:45:259 [CommonPool] -1
+//AbstractCoroutine resume kotlin.Unit       我是com.bennyhuo.coroutines.lite.StandaloneCoroutine@55f9807a
+//AbstractCoroutine resume true       我是com.bennyhuo.coroutines.lite.BlockingCoroutine@33c7353a
