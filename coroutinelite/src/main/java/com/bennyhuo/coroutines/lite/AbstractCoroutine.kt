@@ -25,6 +25,13 @@ abstract class AbstractCoroutine<T>(
     init {
         state.set(State.InComplete)
         //这里传进去this，最后线程池执行完会调用resume方法
+        //launch 举例
+        // (CoroutinesLibrary)createCoroutineUnchecked(completion).resume(Unit) - >
+        // (IntrinsicsJvm)(this.create(completion) as kotlin.coroutines.experimental.jvm.internal.CoroutineImpl).facade
+        //->(CoroutineImpl)facade = interceptContinuationIfNeeded(_context!!, this)->(CoroutineIntrinsics)interceptContinuationIfNeeded
+        //->context[ContinuationInterceptor]?.interceptContinuation(continuation) ?: continuation
+        // (这里会通过ContinuationInterceptor为key查找下，有没有拦截器（其实就是使用代理，对原来的continuation进行一次包装）) ->
+        //(DispatcherContext).interceptContinuation
         block.startCoroutine(this) //this:Continuation
     }
 
