@@ -15,14 +15,14 @@ var mData = ""
 val obj = Object()
 private fun async2Sync(): String {
     // 随便创建一个对象当成锁使用
-
-    requestDataAsync { data ->
-        synchronized(obj) {
+    synchronized(obj) {
+        requestDataAsync { data ->
             mData = data;
-            obj.notify() // 通知所有的等待者
+            obj.notifyAll() // 通知所有的等待者
         }
+        obj.wait()
     }
-    obj.wait()
+
 
     return mData
 }

@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity(), OnAccountStateChangeListener {
         super.onCreate(savedInstanceState)
         Themer.applyProperTheme(this)
         setContentView(R.layout.activity_main)
+
         setSupportActionBar(toolbar)
 
         val toggle =
