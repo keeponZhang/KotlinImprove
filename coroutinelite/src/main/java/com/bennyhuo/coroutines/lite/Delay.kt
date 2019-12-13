@@ -13,5 +13,6 @@ private val executor = Executors.newScheduledThreadPool(1) { runnable ->
 
 suspend fun delay(time: Long, unit: TimeUnit = TimeUnit.MILLISECONDS) = suspendCoroutine<Unit> {
     continuation ->
+    println("准备要执行delay方法了")
     executor.schedule({ continuation.resume(Unit) }, time, unit)
 }

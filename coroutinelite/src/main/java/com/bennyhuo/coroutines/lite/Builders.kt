@@ -11,10 +11,23 @@ fun launch(
 ): AbstractCoroutine<Unit> {
     return StandaloneCoroutine(context, block)
 }
+fun launch2(
+    context: CoroutineContext = CommonPool, block: suspend () -> Unit
+): AbstractCoroutine<Unit> {
+    return StandaloneCoroutine2(context, block)
+}
 
 fun launch多个Interceptor(
     //
     context: CoroutineContext = MyContinuationInterceptor()+ CommonPool , block: suspend () -> Unit
+):
+    AbstractCoroutine<Unit> {
+    return StandaloneCoroutine(context, block)
+}
+
+fun launch多个Interceptor2(
+    //
+    context: CoroutineContext = CommonPool+MyContinuationInterceptor() , block: suspend () -> Unit
 ):
     AbstractCoroutine<Unit> {
     return StandaloneCoroutine(context, block)
