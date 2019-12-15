@@ -133,7 +133,6 @@ dependencies {
     implementation project(":common")
     implementation project(":mvp")
     implementation project(":layout")
-    implementation project(":coroutinelite")
-    compileOnly files('C:/Program Files/Java/jdk1.8.0_212/jre/lib/rt.jar')
-//    implementation files('D:\\java\\jdk_1.8\\jre\\lib\\rt.jar')
+//    compileOnly files('C:/Program Files/Java/jdk1.8.0_212/jre/lib/rt.jar')
+    implementation files('D:\\java\\jdk_1.8\\jre\\lib\\rt.jar')
 }

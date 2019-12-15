@@ -44,7 +44,7 @@ abstract class AbstractCoroutine<T>(
 //   以原子方式设置为给定值，并返回以前的值。
         //程序正常终止，需要设置状态为State.Complete
         val currentState = state.getAndSet(State.Complete(value))
-        println("我是" + this + " 结束调用 resume " + value + " 当前状态=" + getState(
+        println("我是" + this + " 结束调用 <<resume>> " + value + " 当前状态=" + getState(
             currentState) + "  最新状态 =" + getState(state.get()))
         when (currentState) {
             // State.CompleteHandler<T> 运行时泛型参数已经被擦除了
@@ -82,7 +82,6 @@ abstract class AbstractCoroutine<T>(
     //协程的等待(协程有可能执行完了，有可能没有执行完)
     suspend fun join() {
         val currentState = state.get()
-
         when (currentState) {
             is State.InComplete -> {
                 println("AbstractCoroutine join 此时还没完成，所以执行挂起操作 InComplete:")
