@@ -33,6 +33,7 @@ abstract class AbstractCoroutine<T>(
         //->context[ContinuationInterceptor]?.interceptContinuation(continuation) ?: continuation
         // (这里会通过ContinuationInterceptor为key查找下，有没有拦截器（其实就是使用代理，对原来的continuation进行一次包装）) ->
         //(DispatcherContext).interceptContinuation
+        println("开启协程咯")
         block.startCoroutine(this) //this:Continuation
     }
 

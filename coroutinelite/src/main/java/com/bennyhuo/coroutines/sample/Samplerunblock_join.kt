@@ -13,6 +13,7 @@ fun main(args: Array<String>) = runBlocking {
         log(-2)
     }
     log(1)
+    job.join()
     log(3)
     true
 }
