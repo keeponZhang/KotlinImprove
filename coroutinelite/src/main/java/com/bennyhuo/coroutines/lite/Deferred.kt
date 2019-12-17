@@ -18,7 +18,7 @@ class Deferred<T>(context: CoroutineContext, block: suspend () -> T) : AbstractC
         }
     }
 
-    //suspendCoroutine 这个可以实现回调
+    //suspendCoroutine 这个可以实现回调  //Deferred实现跟launch的join其实一样,只不过有返回值
     private suspend fun awaitSuspend() = suspendCoroutine<T> { continuation ->
         doOnCompleted { t, throwable ->
             when {

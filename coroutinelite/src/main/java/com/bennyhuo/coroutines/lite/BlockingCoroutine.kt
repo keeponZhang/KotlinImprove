@@ -10,7 +10,7 @@ class BlockingQueueDispatcher : LinkedBlockingDeque<EventTask>(), Dispatcher {
 //    fun dispatch(block: () -> Unit)
     //DispatchedContinuation 调用到这里
     override fun dispatch(block: EventTask) {
-    println("BlockingQueueDispatcher block")
+    println("BlockingQueueDispatcher block " + this)
         offer(block)
     }
 }

@@ -51,7 +51,7 @@ abstract class AbstractCoroutine<T>(
             // State.CompleteHandler<T> 运行时泛型参数已经被擦除了
             is State.CompleteHandler<*> -> {
                 //这里方便编译期编译器做强转
-                println("resume State.CompleteHandler")
+                println("AbstractCoroutine resume State.CompleteHandler")
                 (currentState as State.CompleteHandler<T>).handler(value, null)
             }
         }
@@ -99,8 +99,7 @@ abstract class AbstractCoroutine<T>(
         }
     }
 
-
-//    public suspend inline fun <T> suspendCoroutine(crossinline block: (Continuation<T>) -> Unit): T =
+    //    public suspend inline fun <T> suspendCoroutine(crossinline block: (Continuation<T>) -> Unit): T =
 //        suspendCoroutineOrReturn { c: Continuation<T> ->
 //            val safe = SafeContinuation(c)
 //            block(safe)
@@ -115,7 +114,7 @@ abstract class AbstractCoroutine<T>(
         //这里面调用抛异常的话会走到resumeWithException
         // 其实这里就是处理回调
         doOnCompleted { t, throwable ->
-            println("joinSuspend doOnCompleted continuation "+continuation)
+            println("joinSuspend doOnCompleted join 完成回调 continuation " + continuation)
             //continuation:SafeContinuation
             continuation.resume(Unit)
         }
@@ -134,7 +133,7 @@ abstract class AbstractCoroutine<T>(
 
     protected fun doOnCompleted(block: (T?, Throwable?) -> Unit) {
         println("AbstractCoroutine  doOnCompleted 调到这里说明挂起的那个job已经执行完了 state:" + getState(state
-            .get()))
+            .get()) + " " + this)
         //如果当前值 == 预期值，则以原子方式将该值设置为给定的更新值。这里需要注意的是这个方法的返回值实际上是是否成功修改，而与之前的值无关。
         //compareAndSet(V expect, V update)
         if (!state.compareAndSet(State.InComplete, State.CompleteHandler<T>(block))) {

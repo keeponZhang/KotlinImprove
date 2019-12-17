@@ -56,6 +56,7 @@ open class DispatcherContext(private val dispatcher: Dispatcher) :
             }
         })
 //        println("fold " + fold)
+        println("返回一个DispatchedContinuation dispatcher "+dispatcher)
         return DispatchedContinuation(fold, dispatcher)//下面这段代码是要查找其他拦截器，并保证能调用它们的拦截方法
     }
 }
@@ -70,6 +71,7 @@ class MyContinuationInterceptor :
     }
 }
 
+//没开启一个协程都会返回一个DispatchedContinuation
 private class DispatchedContinuation<T>(
     val delegate: Continuation<T>, val dispatcher: Dispatcher
 ) :
@@ -80,11 +82,10 @@ private class DispatchedContinuation<T>(
     //CoroutineImpl的completion是StandaloneCoroutine
     override fun resume(value: T) {
         //block.startCoroutine(this)  开启协程的时候回调用到
-        val javaClass = delegate.javaClass
-        val declaredFields = javaClass.declaredFields.size
         println(
-            "DispatchedContinuation delegate.javaClass " + delegate.javaClass + "  " +
-                declaredFields+"  value="+value)
+            "DispatchedContinuation resume delegate.javaClass " + delegate.javaClass + "  " +
+                "dispatcher " +
+                dispatcher + "  value=" + value + " ---------------------------")
         //可以用来切换线程
         dispatcher.dispatch {
             delegate.resume(value)
@@ -92,7 +93,7 @@ private class DispatchedContinuation<T>(
     }
 
     override fun resumeWithException(exception: Throwable) {
-        Log.e("TAG", "DispatchedContinuation resumeWithException: " +exception);
+        Log.e("TAG", "DispatchedContinuation resumeWithException: " + exception);
         dispatcher.dispatch {
             delegate.resumeWithException(exception)
         }
