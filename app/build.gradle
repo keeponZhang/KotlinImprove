@@ -134,5 +134,6 @@ dependencies {
     implementation project(":mvp")
     implementation project(":layout")
 //    compileOnly files('C:/Program Files/Java/jdk1.8.0_212/jre/lib/rt.jar')
-    implementation files('D:\\java\\jdk_1.8\\jre\\lib\\rt.jar')
+//feat:D:\test5\keeponGitgub\KotlinImprove要用as的jdk
+    compileOnly files('D:\\java\\jdk_1.8\\jre\\lib\\rt.jar')
 }
