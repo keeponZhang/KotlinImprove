@@ -13,6 +13,9 @@ buildscript {
     ext.androidTargetSdkVersion = 27
     ext.androidCompileSdkVersion = 27
     repositories {
+         maven {
+            url "http://repo.yypm.com:8181/nexus/content/groups/public"
+        }
         maven{
             url "http://maven.aliyun.com/nexus/content/groups/public"
         }
@@ -32,6 +35,9 @@ buildscript {
 
 allprojects {
     repositories {
+         maven {
+            url "http://repo.yypm.com:8181/nexus/content/groups/public"
+        }
 //        mavenLocal()
         maven{
             url "http://maven.aliyun.com/nexus/content/groups/public"
