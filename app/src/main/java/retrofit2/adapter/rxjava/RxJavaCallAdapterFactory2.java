@@ -111,9 +111,10 @@ public final class RxJavaCallAdapterFactory2 extends CallAdapter.Factory {
     this.schedulerObserveOn = schedulerObserveOn;
     this.isAsync = isAsync;
   }
-
+  // Observable<SearchRepositories>和Observable<<Response>SearchRepositories>还是有点区别的
   @Override
   public CallAdapter<?, ?> get(Type returnType, Annotation[] annotations, Retrofit retrofit) {
+    //class rx.Observable
     Class<?> rawType = getRawType(returnType);
     boolean isSingle = rawType == Single.class;
     boolean isCompletable = rawType == Completable.class;
@@ -130,13 +131,15 @@ public final class RxJavaCallAdapterFactory2 extends CallAdapter.Factory {
     boolean isBody = false;
     boolean isPaging = false;
     Type responseType;
+    //Observable<GitHubPaging<User>>  或者rx.Observable<SearchRepositories>
     if (!(returnType instanceof ParameterizedType)) {
       String name = isSingle ? "Single" : "Observable";
       throw new IllegalStateException(name + " return type must be parameterized"
           + " as " + name + "<Foo> or " + name + "<? extends Foo>");
     }
-
+    //observableType:GitHubPaging<User>
     Type observableType = getParameterUpperBound(0, (ParameterizedType) returnType);
+    //class retrofit2.adapter.rxjava.GitHubPaging
     Class<?> rawObservableType = getRawType(observableType);
     if (rawObservableType == Response.class) {
       if (!(observableType instanceof ParameterizedType)) {

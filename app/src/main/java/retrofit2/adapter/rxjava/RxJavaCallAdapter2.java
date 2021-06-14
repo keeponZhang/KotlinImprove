@@ -36,7 +36,7 @@ final class RxJavaCallAdapter2<R> implements CallAdapter<R, Object> {
   private final boolean isPaging;
   private final boolean isSingle;
   private final boolean isCompletable;
-
+  //需要看调用方RxJavaCallAdapterFactory2
   RxJavaCallAdapter2(Type responseType, @Nullable Scheduler schedulerSubscribeOn, @Nullable Scheduler schedulerObserveOn, boolean isAsync,
                      boolean isResult, boolean isBody, boolean isPaging, boolean isSingle, boolean isCompletable) {
     this.responseType = responseType;
@@ -45,6 +45,7 @@ final class RxJavaCallAdapter2<R> implements CallAdapter<R, Object> {
     this.isAsync = isAsync;
     this.isResult = isResult;
     this.isBody = isBody;
+    //isPaging是新加的属性
     this.isPaging = isPaging;
     this.isSingle = isSingle;
     this.isCompletable = isCompletable;
@@ -55,6 +56,7 @@ final class RxJavaCallAdapter2<R> implements CallAdapter<R, Object> {
   }
 
   @Override public Object adapt(Call<R> call) {
+    //默认是 OnSubscribe<Response<R>>，就是Observable<Response<User>>这种，其他的才需要转换
     OnSubscribe<Response<R>> callFunc = isAsync
         ? new CallEnqueueOnSubscribe<>(call)
         : new CallExecuteOnSubscribe<>(call);
