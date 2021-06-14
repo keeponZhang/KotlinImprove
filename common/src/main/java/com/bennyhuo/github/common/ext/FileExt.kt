@@ -10,6 +10,7 @@ private const val TAG = "FileExt"
  */
 fun File.ensureDir(): Boolean {
     try {
+        //这个也比较简单，不是文件夹的话，如果是文件的话就删除，否则就创建。
         isDirectory.no {
             isFile.yes {
                 delete()

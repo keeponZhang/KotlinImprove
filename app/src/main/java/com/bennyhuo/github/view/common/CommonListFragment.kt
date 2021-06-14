@@ -18,6 +18,7 @@ import org.jetbrains.anko.support.v4.onRefresh
 import org.jetbrains.anko.support.v4.toast
 import retrofit2.adapter.rxjava.GitHubPaging
 
+//CommonListFragment有2个泛型，DataType，Presenter，DataType是CommonListAdapter的泛型
 abstract class CommonListFragment<DataType, out Presenter : CommonListPresenter<DataType, CommonListFragment<DataType, Presenter>>> :
         BaseFragment<Presenter>() {
     protected abstract val adapter: CommonListAdapter<DataType>

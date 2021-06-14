@@ -40,6 +40,8 @@ class MainActivity : AppCompatActivity(), OnAccountStateChangeListener {
         ActionBarController(this)
     }
 
+
+    //lazy委托原理先搜索这个public inline operator fun <T> Lazy<T>.getValue(thisRef: Any?, property: KProperty<*>): T = value
     private val navigationController by lazy {
         NavigationController(navigationView, ::onNavItemChanged, ::handleNavigationHeaderClickEvent)
     }

@@ -5,7 +5,7 @@ import com.bennyhuo.common.log.logger
 import retrofit2.adapter.rxjava.GitHubPaging
 import rx.Observable
 
-abstract class ListPage<DataType>: DataProvider<DataType> {
+abstract class ListPage<DataType> : DataProvider<DataType> {
     companion object {
         const val PAGE_SIZE = 20
     }
@@ -15,9 +15,9 @@ abstract class ListPage<DataType>: DataProvider<DataType> {
 
     val data = GitHubPaging<DataType>()
 
-    fun loadMore() = getData(currentPage + 1)
+    fun loadMore(): Observable<GitHubPaging<DataType>> = getData(currentPage + 1)
             .doOnNext {
-                currentPage=currentPage + 1
+                currentPage = currentPage + 1
             }
             .doOnError {
                 logger.error("loadMore Error", it)
@@ -28,10 +28,10 @@ abstract class ListPage<DataType>: DataProvider<DataType> {
             }
 
     fun loadFromFirst(pageCount: Int = currentPage) =
-
+            //刷新的时候可能会调用到
             Observable.range(1, pageCount)
                     .concatMap {
-                        Log.e("TAG", "ListPage loadFromFirst:" +it);
+                        Log.e("TAG", "ListPage loadFromFirst:" + it);
                         getData(it)
                     }
                     .doOnError {

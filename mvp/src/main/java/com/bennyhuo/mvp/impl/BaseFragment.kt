@@ -12,7 +12,8 @@ import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.jvm.jvmErasure
 
-//不要自定以构造函数
+//不要自定义构造函数
+//BaseFragment其实只有一个泛型P
 abstract class BaseFragment<out P : BasePresenter<BaseFragment<P>>> : IMvpView<P>, Fragment() {
     //负责实例化presenter
     override val presenter: P

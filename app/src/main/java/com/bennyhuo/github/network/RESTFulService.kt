@@ -20,19 +20,44 @@ import rx.schedulers.Schedulers
 import java.io.File
 import java.util.concurrent.TimeUnit
 
+//加了private，不会生成get方法
 private const val BASE_URL = "http://api.github.com"
 
 //通过一个 QueryParameter 让 CacheInterceptor 添加 no-cache
+//const会将private变成public，top-lelve属性没加const时，直接是在编译后的java类名下调用getter
 const val FORCE_NETWORK = "forceNetwork"
+val FORCE_NETWORK2 = "forceNetwork"
 
 private val cacheFile by lazy {
     File(AppContext.cacheDir, "webServiceApi").apply { ensureDir() }
 }
 
+//object,顶层函数，伴生对象都是会生成静态的，加了const，就变成真正静态的，否则是通过get方法获取的
+object test1 {
+    const val name: String = "liuliqianxiao"
+    val name1: String = "liuliqianxiao"
+}
+
+class Person {
+    companion object {
+        const val sex: Int = 1
+        val sex1: Int = 1
+    }
+}
+
+fun main(args: Array<String>) {
+    //
+    System.out.println(test1.name);
+    System.out.println(test1.name1);
+    System.out.println(Person.Companion.sex);
+    System.out.println(Person.Companion.sex1);
+}
+
 val retrofit by lazy {
     Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJavaCallAdapterFactory2.createWithSchedulers(Schedulers.io(), AndroidSchedulers.mainThread()))
+            .addCallAdapterFactory(RxJavaCallAdapterFactory2.createWithSchedulers(Schedulers.io(),
+                    AndroidSchedulers.mainThread()))
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .client(OkHttpClient.Builder()
                     .connectTimeout(60, TimeUnit.SECONDS)
