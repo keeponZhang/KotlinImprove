@@ -12,28 +12,38 @@ import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.jvm.jvmErasure
 
-abstract class BaseFragment<out P: BasePresenter<BaseFragment<P>>>: IMvpView<P>,Fragment() {
+//不要自定以构造函数
+abstract class BaseFragment<out P : BasePresenter<BaseFragment<P>>> : IMvpView<P>, Fragment() {
     //负责实例化presenter
     override val presenter: P
 
     init {
+        //fragment实例化的时候就要实例化presenter，这里就实现了view持有presenter的引用，presenter持有view的引用
         presenter = createPresenterKt()
         presenter.view = this
     }
 
     private fun createPresenterKt(): P {
+        if (true) {
+            return createPresenter()
+        }
         buildSequence {
             var thisClass: KClass<*> = this@BaseFragment::class
             //这里是个死循环
-            while (true){
+            while (true) {
                 //拿到所有父类
+                println("-------------" + thisClass.simpleName + "  ${thisClass.supertypes}")
+                //包括接口的
                 yield(thisClass.supertypes)
-                thisClass = thisClass.supertypes.firstOrNull()?.jvmErasure?: break
+                thisClass = thisClass.supertypes.firstOrNull()?.jvmErasure ?: break
             }
         }.flatMap {
             //泛型参数的List
-            it.flatMap { it.arguments }.asSequence()
+            it.flatMap {
+                it.arguments
+            }.asSequence()
         }.first {
+            //这里要筛选出IPresenter
             it.type?.jvmErasure?.isSubclassOf(IPresenter::class) ?: false
         }.let {
             return it.type!!.jvmErasure.primaryConstructor!!.call() as P
@@ -67,8 +77,10 @@ abstract class BaseFragment<out P: BasePresenter<BaseFragment<P>>>: IMvpView<P>,
         }.filter {
             it is ParameterizedType
         }.flatMap {
+            println("!!type $it")
             (it as ParameterizedType).actualTypeArguments.asSequence()
         }.first {
+            println("!!isAssignableFromtype $it")
             //是不是IPresenter的子类
             it is Class<*> && IPresenter::class.java.isAssignableFrom(it)
         }.let {

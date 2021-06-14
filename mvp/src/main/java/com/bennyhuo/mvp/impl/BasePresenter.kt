@@ -6,7 +6,7 @@ import com.bennyhuo.mvp.IMvpView
 import com.bennyhuo.mvp.IPresenter
 
 //interface IPresenter<out View: IMvpView<IPresenter<View>>>: ILifecycle {
-abstract class BasePresenter<out V: IMvpView<BasePresenter<V>>>: IPresenter<V> {
+abstract class BasePresenter<out V : IMvpView<BasePresenter<V>>> : IPresenter<V> {
 
     //var有get 和set方法，违反了协变和逆变，但是这里我们确实要用，所以加@UnsafeVariance
     override lateinit var view: @UnsafeVariance V

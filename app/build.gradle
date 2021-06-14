@@ -49,6 +49,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+
 }
 
 dependencies {
@@ -135,5 +143,6 @@ dependencies {
     implementation project(":layout")
 //    compileOnly files('C:/Program Files/Java/jdk1.8.0_212/jre/lib/rt.jar')
 //feat:D:\test5\keeponGitgub\KotlinImprove要用as的jdk
-    compileOnly files('D:\\java\\jdk_1.8\\jre\\lib\\rt.jar')
+//    compileOnly files('D:\\java\\jdk_1.8\\jre\\lib\\rt.jar')
+//    compileOnly 'com.google.android.gms:play-services-safetynet:15.0.1'
 }

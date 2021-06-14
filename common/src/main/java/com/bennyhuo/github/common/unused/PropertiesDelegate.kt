@@ -3,7 +3,7 @@ package com.bennyhuo.github.common.unused
 import java.io.File
 import java.io.FileInputStream
 import java.net.URL
-import java.util.*
+import java.util.Properties
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 import kotlin.reflect.full.isSuperclassOf
@@ -13,6 +13,7 @@ import kotlin.reflect.full.isSuperclassOf
  */
 class PropertiesDelegate(private val path: String) {
 
+    //lateinit就不用初始化了
     private lateinit var url: URL
 
     private val properties: Properties by lazy {
@@ -39,16 +40,23 @@ class PropertiesDelegate(private val path: String) {
         prop
     }
 
+    //    https://blog.csdn.net/u013448469/article/details/79403284
+    //T表示属性的类型，thisRef是属性所在类的类型
     operator fun <T> getValue(thisRef: Any, property: KProperty<*>): T {
-        //读出来其实都是字符串
+        //读出来其实都是字符串，这里需要转化
         val value = properties[property.name]
-//        Log.e("TAG", "PropertiesDelegate getValue:"+property );
+        println("\"TAG\", \"PropertiesDelegate getValue:\" + $property")
+//        Log.e("TAG", "PropertiesDelegate getValue:" + property);
         val classOfT = property.returnType.classifier as KClass<*>
+
+//    thisRef::class
+//        val kotlin = thisRef.javaClass.kotlin
         return when {
             Boolean::class == classOfT -> value.toString().toBoolean()  //value是Any?类型
             Number::class.isSuperclassOf(classOfT) -> {
-                //用的是java反射
-                classOfT.javaObjectType.getDeclaredMethod("parse${classOfT.simpleName}", String::class.java).invoke(null, value)
+                //用的是java反射 Long.parseLong
+                classOfT.javaObjectType.getDeclaredMethod("parse${classOfT.simpleName}",
+                        String::class.java).invoke(null, value)
             }
             String::class == classOfT -> value
             else -> throw IllegalArgumentException("Unsupported type.")
@@ -64,5 +72,6 @@ class PropertiesDelegate(private val path: String) {
 }
 
 abstract class AbsProperties(path: String) {
+    //一次性读写出来
     protected val prop = PropertiesDelegate(path)
 }
