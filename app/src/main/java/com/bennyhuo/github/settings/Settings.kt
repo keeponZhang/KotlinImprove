@@ -14,7 +14,8 @@ object Settings {
 
     val defaultPage
         get() = if(AccountManager.isLoggedIn()) defaultPageForUser else defaultPageForVisitor
-
+    //Preference是委托类，R.id.navRepos是Int类型，所以defaultPageForUser也是Int
+    //其实下面两个没有用到get方法，没必要用委托
     private var defaultPageForUser by pref(R.id.navRepos)
 
     private var defaultPageForVisitor by pref(R.id.navRepos)

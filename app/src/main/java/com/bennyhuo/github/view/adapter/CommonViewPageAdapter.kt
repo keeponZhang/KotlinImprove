@@ -17,7 +17,7 @@ class CommonViewPageAdapter(fragmentManager: FragmentManager) : FragmentPagerAda
     }
 
     override fun getCount(): Int {
-        Log.e("TAG", "CommonViewPageAdapter getCount:" +fragmentPages.size);
+//        Log.e("TAG", "CommonViewPageAdapter getCount:" +fragmentPages.size);
         return fragmentPages.size
     }
 
@@ -28,7 +28,7 @@ class CommonViewPageAdapter(fragmentManager: FragmentManager) : FragmentPagerAda
                 return index
             }
         }
-        Log.e("TAG", "CommonViewPageAdapter getItemPosition POSITION_NONE:" );
+//        Log.e("TAG", "CommonViewPageAdapter getItemPosition POSITION_NONE:" );
         return PagerAdapter.POSITION_NONE
     }
 

@@ -1,6 +1,7 @@
 package com.bennyhuo.github.view.widget
 
 import android.support.design.widget.NavigationView
+import android.util.Log
 import android.view.MenuItem
 import com.bennyhuo.common.log.logger
 import com.bennyhuo.github.R
@@ -16,9 +17,9 @@ import org.jetbrains.anko.imageResource
 import org.jetbrains.anko.sdk15.listeners.onClick
 
 class NavigationController(
-        private val navigationView: NavigationView,
-        private val onNavItemChanged: (NavViewItem) -> Unit,
-        private val onHeaderClick: () -> Unit
+    private val navigationView: NavigationView,
+    private val onNavItemChanged: (NavViewItem) -> Unit,
+    private val onHeaderClick: () -> Unit
 ) : NavigationView.OnNavigationItemSelectedListener {
 
     init {
@@ -30,7 +31,9 @@ class NavigationController(
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         navigationView.apply {
             Settings.lastPage = item.itemId
+            Log.e("TAG", "NavigationController onNavigationItemSelected []: ${item.itemId}")
             val navItem = NavViewItem[item.itemId]
+//            currentItem = navItem
             onNavItemChanged(navItem)
         }
         return true
@@ -70,9 +73,12 @@ class NavigationController(
         logger.debug("selectProperItem")
         navigationView.doOnLayoutAvailable {
             logger.debug("selectProperItem onLayout: $currentItem")
+            //注意?:
             ((currentItem?.let { NavViewItem[it] } ?: Settings.lastPage)
-                    .takeIf { navigationView.menu.findItem(it) != null } ?: run { Settings.defaultPage })
-                    .let(navigationView::selectItem)
+                .takeIf { navigationView.menu.findItem(it) != null }
+                ?: run { Settings.defaultPage })
+                //
+                .let(navigationView::selectItem)
         }
     }
 }

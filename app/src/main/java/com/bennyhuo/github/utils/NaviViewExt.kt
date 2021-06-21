@@ -18,6 +18,7 @@ import com.bennyhuo.github.view.config.NavViewItem
  * Created by benny on 7/6/17.
  */
 inline fun NavigationView.doOnLayoutAvailable(crossinline block: () -> Unit) {
+    //只有当 View 至少经历过一次 layout 时，isLaidOut() 方法才能返回 true
     ViewCompat.isLaidOut(this).yes {
         block()
     }.otherwise {

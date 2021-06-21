@@ -19,7 +19,7 @@ class Preference<T>(
     override fun getValue(thisRef: Any?, property: KProperty<*>): T {
         return findPreference(findProperName(property))
     }
-
+    //这里可知，name可以为空
     private fun findProperName(property: KProperty<*>) = if (name.isEmpty()) property.name else name
 
     private fun findPreference(key: String): T {

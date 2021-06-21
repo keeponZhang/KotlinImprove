@@ -33,7 +33,7 @@ object AccountManager {
             return field
         }
         set(value) {
-            if(value == null){
+            if (value == null) {
                 userJson = ""
             } else {
                 userJson = Gson().toJson(value)
@@ -56,40 +56,40 @@ object AccountManager {
     fun isLoggedIn(): Boolean = token.isNotEmpty()
 
     fun login() =
-            AuthService.createAuthorization(AuthorizationReq())
-                    .doOnNext {
-                        if (it.token.isEmpty()) throw AccountException(it)
-                    }
-                    .retryWhen {
-                        it.flatMap {
-                            if (it is AccountException) {
-                                AuthService.deleteAuthorization(it.authorizationRsp.id)
-                            } else {
-                                Observable.error(it)
-                            }
-                        }
-                    }
-                    .flatMap {
-                        token = it.token
-                        authId = it.id
-                        UserService.getAuthenticatedUser()
-                    }
-                    .map {
-                        currentUser = it
-                        notifyLogin(it)
-                    }
-
-    fun logout() = AuthService.deleteAuthorization(authId)
+        AuthService.createAuthorization(AuthorizationReq())
             .doOnNext {
-                if (it.isSuccessful) {
-                    authId = -1
-                    token = ""
-                    currentUser = null
-                    notifyLogout()
-                } else {
-                    throw HttpException(it)
+                if (it.token.isEmpty()) throw AccountException(it)
+            }
+            .retryWhen {
+                it.flatMap {
+                    if (it is AccountException) {
+                        AuthService.deleteAuthorization(it.authorizationRsp.id)
+                    } else {
+                        Observable.error(it)
+                    }
                 }
             }
+            .flatMap {
+                token = it.token
+                authId = it.id
+                UserService.getAuthenticatedUser()
+            }
+            .map {
+                currentUser = it
+                notifyLogin(it)
+            }
+
+    fun logout() = AuthService.deleteAuthorization(authId)
+        .doOnNext {
+            if (it.isSuccessful) {
+                authId = -1
+                token = ""
+                currentUser = null
+                notifyLogout()
+            } else {
+                throw HttpException(it)
+            }
+        }
 
     class AccountException(val authorizationRsp: AuthorizationRsp) : Exception("Already logged in.")
 }

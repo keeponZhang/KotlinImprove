@@ -55,23 +55,28 @@ fun main(args: Array<String>) {
 
 val retrofit by lazy {
     Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJavaCallAdapterFactory2.createWithSchedulers(Schedulers.io(),
-                    AndroidSchedulers.mainThread()))
-            .addCallAdapterFactory(CoroutineCallAdapterFactory())
-            .client(OkHttpClient.Builder()
-                    .connectTimeout(60, TimeUnit.SECONDS)
-                    .readTimeout(60, TimeUnit.SECONDS)
-                    .writeTimeout(60, TimeUnit.SECONDS)
-                    .cache(Cache(cacheFile, 1024 * 1024 * 1024))
-                    .addInterceptor(AcceptInterceptor())
-                    .addInterceptor(AuthInterceptor())
-                    .addInterceptor(CacheInterceptor())
-                    .addInterceptor(HttpLoggingInterceptor().setLevel(Level.BODY))
-                    .enableTls12OnPreLollipop()
-                    .sslSocketFactory(TLSSocketFactory())
-                    .build()
+        .addConverterFactory(GsonConverterFactory.create())
+        .addCallAdapterFactory(
+            RxJavaCallAdapterFactory2.createWithSchedulers(
+                Schedulers.io(),
+                AndroidSchedulers.mainThread()
             )
-            .baseUrl(BASE_URL)
-            .build()
+        )
+        .addCallAdapterFactory(CoroutineCallAdapterFactory())
+        .client(
+            OkHttpClient.Builder()
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .cache(Cache(cacheFile, 1024 * 1024 * 1024))
+                .addInterceptor(AcceptInterceptor())
+                .addInterceptor(AuthInterceptor())
+                .addInterceptor(CacheInterceptor())
+                .addInterceptor(HttpLoggingInterceptor().setLevel(Level.BODY))
+                .enableTls12OnPreLollipop()
+                .sslSocketFactory(TLSSocketFactory())
+                .build()
+        )
+        .baseUrl(BASE_URL)
+        .build()
 }

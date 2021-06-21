@@ -99,7 +99,7 @@ class MainActivity : AppCompatActivity(), OnAccountStateChangeListener {
             .otherwise {
                 navigationController.useNoLoginLayout()
             }
-        navigationController.selectProperItem()
+//        navigationController.selectProperItem()
     }
 
     override fun onLogin(user: User) {
